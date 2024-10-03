@@ -17,7 +17,7 @@ namespace Domain.Entities
         public int UserId { get; set; }
         public User? User { get; set; }
         public List<Participant> Participants { get; set; } = new List<Participant>();
-        public List<Task> TaskList { get; set; } = new List<Task>();
+        public List<TaskEvent> TaskList { get; set; } = new List<TaskEvent>();
 
     }
 }
