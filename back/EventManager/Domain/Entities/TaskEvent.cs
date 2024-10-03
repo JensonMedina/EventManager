@@ -8,7 +8,7 @@ using Domain.Enum;
 
 namespace Domain.Entities
 {
-    public class Task
+    public class TaskEvent
     {
         public int Id { get; set; }
         [Column(TypeName = "varchar(50)")]
