@@ -1,3 +1,8 @@
+using Application.Interfaces;
+using Application.Mappings;
+using Application.Services;
+using Domain.Entities;
+using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +16,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Connection")));
+
+
+builder.Services.AddScoped<IRepositoryBase<User>, EfRepository<User>>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<UserMapping>();
 
 var app = builder.Build();
 
