@@ -1,8 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.Models.Request;
 using Application.Models.Response;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Web.Controllers
 {
@@ -11,15 +12,25 @@ namespace Web.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly ICustomAuthenticationService _customAuthenticationService;
+
+        public UserController(IUserService userService, ICustomAuthenticationService customAuthenticationService)
         {
             _userService = userService;
+            _customAuthenticationService = customAuthenticationService;
         }
 
-        [HttpGet("{idUser}", Name = "GetUserProfileAsync")]
-        public async Task<ActionResult<UserResponse>> GetUserProfileAsync(int idUser)
+
+        [Authorize]
+        [HttpGet("[action]")]
+        public async Task<ActionResult<UserResponse>> GetUserProfileAsync()
         {
-            var user = await _userService.GetUserProfileAsync(idUser);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            var user = await _userService.GetUserProfileAsync(int.Parse(userIdClaim));
             if (user == null)
             {
                 return NotFound("No se encontró un usuario con ese id.");
@@ -38,12 +49,26 @@ namespace Web.Controllers
             try
             {
                 var response = await _userService.AddUserAsync(request);
-                return CreatedAtRoute("GetUserProfileAsync", new { idUser = response.Id }, response);
+                return CreatedAtRoute("", response);
             }
             catch (Exception ex)
             {
 
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult> loginAsync(AuthRequest request)
+        {
+            try
+            {
+                var token = await _customAuthenticationService.Authenticate(request);
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(ex.Message);
             }
         }
     }

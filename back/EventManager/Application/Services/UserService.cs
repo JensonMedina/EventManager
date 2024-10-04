@@ -27,6 +27,7 @@ namespace Application.Services
             {
                 throw new Exception("Ya existe un usuario con este correo.");
             }
+            request.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var entity = await _repository.AddAsync(_mapping.FromRequestToEntity(request));
             var response = _mapping.FromEntityToResponse(entity);
             return response;
