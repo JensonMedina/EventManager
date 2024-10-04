@@ -72,6 +72,15 @@ builder.Services.AddScoped<ICustomAuthenticationService, AuthenticationService>(
 builder.Services.Configure<AuthenticationServiceOptions>(builder.Configuration.GetSection(AuthenticationServiceOptions.Authentication));
 builder.Services.AddScoped<UserMapping>();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -84,6 +93,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseCors("AllowAll");
 
 app.MapControllers();
 
