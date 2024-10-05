@@ -9,8 +9,14 @@ import {
 } from "@/components/ui/card";
 import Login from "../components/login/Login";
 import Register from "../components/register/Register";
+import { useAuth } from "@/services/authentication/AuthenticationContext";
+import { Navigate } from "react-router-dom";
 
 const AuthPage = () => {
+  const { token } = useAuth();
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
   const [activeTab, setActiveTab] = useState("login");
 
   return (

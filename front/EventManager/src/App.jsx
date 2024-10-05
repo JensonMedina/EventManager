@@ -1,14 +1,24 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./components/login/Login";
-import Register from "./components/register/Register";
+import MainLayout from "./layouts/MainLayout";
 import AuthPage from "./screens/AuthPage";
+import Dashboard from "./screens/Dashboard";
+import Protected from "./routes/Protected";
 
 const App = () => {
   const router = createBrowserRouter([
     {
       path: "/auth",
       element: <AuthPage />,
+    },
+    {
+      path: "/",
+      element: (
+        <Protected>
+          <MainLayout />
+        </Protected>
+      ),
+      children: [{ path: "/", element: <Dashboard /> }],
     },
   ]);
   return (

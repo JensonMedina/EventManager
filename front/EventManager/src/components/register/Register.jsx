@@ -46,7 +46,7 @@ const Register = () => {
     setError({});
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       nameInput.trim() === "" ||
@@ -63,7 +63,9 @@ const Register = () => {
       setError({ message: "Las contraseñas no coinciden" });
       return;
     }
-    if (!login()) {
+    const isLoginSuccess = await login();
+    console.log(isLoginSuccess);
+    if (!isLoginSuccess) {
       showToast("Error al crear la cuenta");
       return;
     }
@@ -72,36 +74,34 @@ const Register = () => {
   };
 
   const login = async () => {
-    const response = await fetch("https://localhost:7299/api/User/AddUser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: nameInput,
-        lastName: lastNameInput,
-        birthDate: birthDateInput,
-        email: emailInput,
-        password: passwordInput,
-      }),
-    });
-    const data = await response.json();
-    if (data.success) {
-      return true;
+    try {
+      const response = await fetch("https://localhost:7299/api/User/AddUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: nameInput,
+          lastName: lastNameInput,
+          birthDate: birthDateInput ? birthDateInput.toISOString() : null,
+          email: emailInput,
+          password: passwordInput,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        return true;
+      } else {
+        showToast(data.message || "Error al crear la cuenta");
+        return false;
+      }
+    } catch (error) {
+      showToast("Error de conexión");
+      return false;
     }
-    return false;
   };
-  //   curl -X 'POST' \
-  //   'https://localhost:7299/api/User/AddUser' \
-  //   -H 'accept: */*' \
-  //   -H 'Content-Type: application/json' \
-  //   -d '{
-  //   "name": "string",
-  //   "lastName": "string",
-  //   "birthDate": "2024-10-04T20:01:31.207Z",
-  //   "email": "string",
-  //   "password": "string"
-  // }'
+
   const cleanForm = () => {
     setNameInput("");
     setLastNameInput("");
@@ -112,7 +112,7 @@ const Register = () => {
   };
   const showToast = (msg) => {
     toast({
-      description: { msg },
+      description: msg,
     });
   };
 
