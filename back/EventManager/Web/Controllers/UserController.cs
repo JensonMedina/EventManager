@@ -61,15 +61,17 @@ namespace Web.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult> loginAsync(AuthRequest request)
         {
-            try
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             {
-                var token = await _customAuthenticationService.Authenticate(request);
-                return Ok(token);
+                return BadRequest("Email y contraseña son requeridos.");
             }
-            catch (Exception ex)
+            var token = await _customAuthenticationService.Authenticate(request);
+            if (token == null)
             {
-                return Unauthorized(ex.Message);
+                return Unauthorized("Falló la autenticación de usuario.");
             }
+            return Ok(token);
+
         }
     }
 }

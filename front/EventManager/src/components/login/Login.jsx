@@ -27,10 +27,10 @@ const Login = () => {
       setErrorInputs({ msg: "Todos los campos son requeridos" });
       return;
     }
-    const isLoggedIn = await login(email, password);
+    const result = await login(email, password);
 
-    if (!isLoggedIn) {
-      setErrorInputs({ msg: "usuario o contraseña incorrectos" });
+    if (!result.success) {
+      setErrorInputs({ msg: result.msg });
       return;
     }
     navigate("/", replace);

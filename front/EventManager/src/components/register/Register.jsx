@@ -5,12 +5,11 @@ import DateTimePicker from "@/components/dateTimePicker/DateTimePicker";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { set } from "date-fns";
 
 const Register = () => {
   const [nameInput, setNameInput] = useState("");
   const [lastNameInput, setLastNameInput] = useState("");
-  const [birthDateInput, setBirthDateInput] = useState(null);
+  const [birthDateInput, setBirthDateInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
@@ -63,9 +62,8 @@ const Register = () => {
       setError({ message: "Las contraseñas no coinciden" });
       return;
     }
-    const isLoginSuccess = await login();
-    console.log(isLoginSuccess);
-    if (!isLoginSuccess) {
+    const isRegisterSuccess = await register();
+    if (!isRegisterSuccess) {
       showToast("Error al crear la cuenta");
       return;
     }
@@ -73,7 +71,7 @@ const Register = () => {
     cleanForm();
   };
 
-  const login = async () => {
+  const register = async () => {
     try {
       const response = await fetch("https://localhost:7299/api/User/AddUser", {
         method: "POST",
@@ -83,13 +81,14 @@ const Register = () => {
         body: JSON.stringify({
           name: nameInput,
           lastName: lastNameInput,
-          birthDate: birthDateInput ? birthDateInput.toISOString() : null,
+          birthDate: birthDateInput ? birthDateInput : null,
           email: emailInput,
           password: passwordInput,
         }),
       });
 
       const data = await response.json();
+
       if (response.ok && data.success) {
         return true;
       } else {
@@ -105,7 +104,7 @@ const Register = () => {
   const cleanForm = () => {
     setNameInput("");
     setLastNameInput("");
-    setBirthDateInput(null);
+    setBirthDateInput("");
     setEmailInput("");
     setPasswordInput("");
     setConfirmPasswordInput("");

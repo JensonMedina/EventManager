@@ -23,16 +23,19 @@ export const AuthProvider = ({ children }) => {
 
       if (!response.ok) {
         const errorMessage = await response.text();
-        throw new Error(errorMessage);
+        return { success: false, msg: "Usuario o contraseña incorrectos" };
       }
 
       const token = await response.text();
       setToken(token);
       localStorage.setItem("token", token);
-      return true;
+      return { success: true };
     } catch (error) {
       console.error("Error de autenticación:", error.message);
-      return false;
+      return {
+        success: false,
+        msg: "Error en la conexión con el servidor.",
+      };
     }
   };
 
