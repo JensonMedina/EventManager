@@ -14,5 +14,6 @@ namespace Infrastructure.Data
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             return user;
         }
+        
     }
 }
