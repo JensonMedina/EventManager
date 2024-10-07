@@ -43,33 +43,35 @@ namespace Web.Controllers
         {
             if (string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             {
-                return BadRequest("el nombre, el correo y la contraseña son obligatorios.");
+                return BadRequest(new { success = false, message = "El nombre, el correo y la contraseña son obligatorios." });
             }
 
             try
             {
                 var response = await _userService.AddUserAsync(request);
-                return CreatedAtRoute("", response);
+                return CreatedAtRoute("", new { success = true, data = response });
             }
             catch (Exception ex)
             {
-
-                return BadRequest(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
+
 
         [HttpPost("[action]")]
         public async Task<ActionResult> loginAsync(AuthRequest request)
         {
-            try
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             {
-                var token = await _customAuthenticationService.Authenticate(request);
-                return Ok(token);
+                return BadRequest("Email y contraseña son requeridos.");
             }
-            catch (Exception ex)
+            var token = await _customAuthenticationService.Authenticate(request);
+            if (token == null)
             {
-                return Unauthorized(ex.Message);
+                return Unauthorized("Falló la autenticación de usuario.");
             }
+            return Ok(token);
+
         }
     }
 }

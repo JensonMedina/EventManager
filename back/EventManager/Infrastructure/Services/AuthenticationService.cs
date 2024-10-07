@@ -38,12 +38,12 @@ namespace Infrastructure.Services
             }
             return null;
         }
-        public async Task<string> Authenticate(AuthRequest request)
+        public async Task<string?> Authenticate(AuthRequest request)
         {
             var user = await ValidateUserAsync(request);
             if (user == null)
             {
-                throw new Exception("Falló la autenticación de usuario.");
+                return null;
             }
 
             var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_options.SecretForKey));
