@@ -29,13 +29,10 @@ namespace Application.Services
 
         }
 
-        public async Task<List<EventResponse>?> GetAllEventsAsync(int idUser)
+        public async Task<List<EventResponse>> GetAllEventsAsync(int idUser)
         {
             var eventsEntities = await _eventRepository.GetAllEventsAsync(idUser);
-            if(eventsEntities == null)
-            {
-                return null; //no se encontro el usuario con ese id
-            }
+
             var eventsMapped = eventsEntities.Select(s => _mapping.FromEntityToResponse(s)).ToList();
             return eventsMapped;
         }

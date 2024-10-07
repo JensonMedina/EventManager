@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface IEventService
     {
-        Task<List<EventResponse>?> GetAllEventsAsync(int idUser);
+        Task<List<EventResponse>> GetAllEventsAsync(int idUser);
         Task<EventResponse> AddEventAsync(EventRequest request, int idUser);
     }
 }

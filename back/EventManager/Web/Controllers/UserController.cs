@@ -49,7 +49,7 @@ namespace Web.Controllers
             try
             {
                 var response = await _userService.AddUserAsync(request);
-                return CreatedAtRoute("", new { success = true, data = response });
+                return Created("", new { success = true, data = response });
             }
             catch (Exception ex)
             {

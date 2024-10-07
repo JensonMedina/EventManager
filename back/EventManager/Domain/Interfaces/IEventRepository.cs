@@ -9,6 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IEventRepository
     {
-        Task<List<Event>?> GetAllEventsAsync(int userId);
+        Task<List<Event>> GetAllEventsAsync(int userId);
     }
 }

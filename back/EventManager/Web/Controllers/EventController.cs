@@ -25,10 +25,7 @@ namespace Web.Controllers
                 return Unauthorized(); // Si no está el claim, no hay un usuario autorizado.
             }
             var eventsReponse = await _eventService.GetAllEventsAsync(int.Parse(userIdClaim));
-            if (eventsReponse == null)
-            {
-                return BadRequest("No se encontró el usuario.");
-            }
+
 
 
             return Ok(eventsReponse);
@@ -43,19 +40,23 @@ namespace Web.Controllers
             {
                 return Unauthorized(); // Si no está el claim, no hay un usuario autorizado.
             }
-            if (string.IsNullOrEmpty(request.EventName) || string.IsNullOrEmpty(request.EventDate.ToString()) || string.IsNullOrEmpty(request.EventLocation))
+
+            if (string.IsNullOrEmpty(request.EventName) || !request.EventDate.HasValue || string.IsNullOrEmpty(request.EventLocation))
             {
                 return BadRequest("El nombre, fecha y ubicación del evento son obligatorios.");
             }
+
             try
             {
                 var response = await _eventService.AddEventAsync(request, int.Parse(userIdClaim));
-                return CreatedAtRoute("", new { success = true, data = response });
+                return Created("", new { success = true, data = response });
+
             }
             catch (Exception ex)
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
+
     }
 }
