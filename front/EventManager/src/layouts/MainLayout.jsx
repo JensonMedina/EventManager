@@ -1,7 +1,8 @@
 import { useAuth } from "@/services/authentication/AuthenticationContext";
 import React from "react";
+import { Outlet } from "react-router-dom";
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
   const { logout } = useAuth();
   return (
     <div>
@@ -9,7 +10,9 @@ const MainLayout = ({ children }) => {
         header
         <button onClick={logout}>Cerrar sesion</button>
       </div>
-      <div>{children}</div>
+      <div>
+        <Outlet />
+      </div>
     </div>
   );
 };

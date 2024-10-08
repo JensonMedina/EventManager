@@ -18,6 +18,7 @@ namespace Application.Mappings
                 EventName = request.EventName,
                 EventDate = request.EventDate,
                 EventLocation = request.EventLocation,
+                EventDescription = request.EventDescription,
                 UserId = idUser
             };
         }
@@ -29,6 +30,7 @@ namespace Application.Mappings
                 EventName = entity.EventName,
                 EventDate = entity.EventDate,
                 EventLocation = entity.EventLocation,
+                EventDescription = entity.EventDescription,
             };
         }
     }
