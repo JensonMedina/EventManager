@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
-import { EventContext } from "@/services/context/EventContext";
+import { EventContext } from "@/services/eventContext/EventContext";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
@@ -27,6 +27,7 @@ const CreateEvent = () => {
   const [eventDescription, setEventDescription] = useState("");
   const [error, setError] = useState({});
   const { AddEvent } = useContext(EventContext);
+  const { AddParticipant } = useContext(EventContext);
   const { toast } = useToast();
 
   const [participants, setParticipants] = useState([{ name: "", email: "" }]);
@@ -83,6 +84,12 @@ const CreateEvent = () => {
       });
       return;
     }
+    for (let i = 0; i < participants.length; i++) {
+      if (participants[i].name.trim() === "") {
+        setError({ msg: "El nombre de los participantes es obligatorio." });
+        return;
+      }
+    }
     const dateTimeString = `${eventDate}T${eventTime}:00`;
     const newEvent = {
       eventName: eventName,
@@ -90,7 +97,6 @@ const CreateEvent = () => {
       eventLocation: eventLocation,
       eventDescription: eventDescription,
     };
-    console.log(newEvent);
 
     const isCreatedSucces = await AddEvent(newEvent);
     if (!isCreatedSucces) {
@@ -98,6 +104,10 @@ const CreateEvent = () => {
       return;
     }
     showToast("Se creó el evento con exito.");
+    const idEvent = isCreatedSucces.data.id;
+    if (idEvent !== null) {
+      await AddParticipant(idEvent, participants);
+    }
     cleanForm();
   };
   const cleanForm = () => {
@@ -106,6 +116,8 @@ const CreateEvent = () => {
     setEventTime("");
     setEventLocation("");
     setEventDescription("");
+    setParticipants([{ name: "", email: "" }]);
+    setTasks([{ name: "", assignee: "" }]);
     setError({});
   };
   const showToast = (msg) => {
@@ -186,7 +198,10 @@ const CreateEvent = () => {
               <InputParticipant
                 key={index}
                 index={index}
+                setParticipants={setParticipants}
+                setError={setError}
                 removeParticipant={removeParticipant}
+                participant={participant}
               />
             ))}
             <Button onClick={addParticipant} variant="outline" type="button">

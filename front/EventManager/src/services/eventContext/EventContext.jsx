@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyODQ4MDQ5MiwiZXhwIjoxNzI4NTY2ODkyLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.ewgolkdQy7wcLjPBBrCldOcO4LnTcRi2jCwRbftoWpA";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyODQ4ODA1NywiZXhwIjoxNzI4NTc0NDU3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.JHIo-Uxj-ZT9050AgSRetLx2NURC5Gorz1EwllB7KTk";
 
   const GetAllEvents = async () => {
     try {
@@ -79,12 +79,54 @@ const EventProvider = ({ children }) => {
     const data = await response.json();
     return data;
   };
+
+  const AddParticipant = async (eventId, participants) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/events/Participant/${eventId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+          body: JSON.stringify(participants),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al agregar participante:", error);
+      return null;
+    }
+  };
+  const GetParticipants = async (eventId) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/events/Participant/${eventId}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al obtener los participantes:", error);
+      return null;
+    }
+  };
   const data = {
     GetAllEvents,
     GetEventById,
     AddEvent,
     UpdateEvent,
     DeleteEvent,
+    AddParticipant,
+    GetParticipants,
   };
   return <EventContext.Provider value={data}>{children}</EventContext.Provider>;
 };

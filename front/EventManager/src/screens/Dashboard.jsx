@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CardEvent from "@/components/cardEvent/CardEvent";
-import { EventContext } from "@/services/context/EventContext";
+import { EventContext } from "@/services/eventContext/EventContext";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
