@@ -104,10 +104,13 @@ const CreateEvent = () => {
       return;
     }
     showToast("Se creó el evento con exito.");
-    const idEvent = isCreatedSucces.data.id;
-    if (idEvent !== null) {
-      await AddParticipant(idEvent, participants);
+    if (participants.length > 0) {
+      const idEvent = isCreatedSucces.data.id;
+      if (idEvent !== null) {
+        await AddParticipant(idEvent, participants);
+      }
     }
+
     cleanForm();
   };
   const cleanForm = () => {
