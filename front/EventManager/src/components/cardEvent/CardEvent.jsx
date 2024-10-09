@@ -7,6 +7,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -49,6 +50,7 @@ const CardEvent = ({ event }) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </CardTitle>
+        <CardDescription>{event.eventDescription}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">

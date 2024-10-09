@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyODQwMDM4OSwiZXhwIjoxNzI4NDg2Nzg5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.wZNxUjBe9srgbMizDy7YvAzEJChtS0WtviTD9vwm3B4";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyODQ4MDQ5MiwiZXhwIjoxNzI4NTY2ODkyLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.ewgolkdQy7wcLjPBBrCldOcO4LnTcRi2jCwRbftoWpA";
 
   const GetAllEvents = async () => {
     try {

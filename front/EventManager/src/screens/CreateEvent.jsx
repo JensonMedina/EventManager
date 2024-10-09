@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,16 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { EventContext } from "@/services/context/EventContext";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Link } from "react-router-dom";
+import InputParticipant from "@/components/inputParticipant/InputParticipant";
+import InputTask from "@/components/inputTask/InputTask";
 
 const CreateEvent = () => {
   const [eventName, setEventName] = useState("");
@@ -81,7 +78,9 @@ const CreateEvent = () => {
       eventLocation.trim() === "" ||
       eventDescription.trim() === ""
     ) {
-      setError({ msg: "Debes completar todos los campos." });
+      setError({
+        msg: "Debes completar los campos de información del evento.",
+      });
       return;
     }
     const dateTimeString = `${eventDate}T${eventTime}:00`;
@@ -184,19 +183,13 @@ const CreateEvent = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {participants.map((participant, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <Input placeholder="Nombre" className="flex-1" />
-                <Input placeholder="Email" className="flex-1" />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => removeParticipant(index)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+              <InputParticipant
+                key={index}
+                index={index}
+                removeParticipant={removeParticipant}
+              />
             ))}
-            <Button onClick={addParticipant} variant="outline">
+            <Button onClick={addParticipant} variant="outline" type="button">
               <Plus className="mr-2 h-4 w-4" /> Agregar Participante
             </Button>
           </CardContent>
@@ -208,37 +201,23 @@ const CreateEvent = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {tasks.map((task, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <Input placeholder="Nombre de la tarea" className="flex-1" />
-                <Select>
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Asignar a" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {participants.map((participant, i) => (
-                      <SelectItem key={i} value={`participant-${i}`}>
-                        {participant.name || `Participante ${i + 1}`}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => removeTask(index)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+              <InputTask
+                key={index}
+                participants={participants}
+                index={index}
+                removeTask={removeTask}
+              />
             ))}
-            <Button onClick={addTask} variant="outline">
+            <Button onClick={addTask} variant="outline" type="button">
               <Plus className="mr-2 h-4 w-4" /> Agregar Tarea
             </Button>
           </CardContent>
         </Card>
         {error.msg && <p className="text-red-500">{error.msg}</p>}
         <CardFooter className="flex justify-end space-x-2">
-          <Button variant="outline">Cancelar</Button>
+          <Button variant="outline">
+            <Link to={"/"}>Cancelar</Link>
+          </Button>
           <Button type="submit">Crear Evento</Button>
         </CardFooter>
       </form>
