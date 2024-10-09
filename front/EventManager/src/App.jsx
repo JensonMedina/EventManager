@@ -5,6 +5,7 @@ import AuthPage from "./screens/AuthPage";
 import Dashboard from "./screens/Dashboard";
 import Protected from "./routes/Protected";
 import CreateEvent from "./screens/CreateEvent";
+import EventDetail from "./screens/EventDetail";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -22,6 +23,7 @@ const App = () => {
       children: [
         { path: "/", element: <Dashboard /> },
         { path: "/create-event", element: <CreateEvent /> },
+        { path: "/event-detail/:idEvent", element: <EventDetail /> },
       ],
     },
   ]);
