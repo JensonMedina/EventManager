@@ -36,5 +36,16 @@ namespace Application.Services
             var eventsMapped = eventsEntities.Select(s => _mapping.FromEntityToResponse(s)).ToList();
             return eventsMapped;
         }
+
+        public async Task<EventDetailResponse?> GetEventById(int idEvent)
+        {
+            var response = await _eventRepository.GetEventByIdAsync(idEvent);
+            if (response == null)
+            {
+                return null;
+            }
+            var responseMapped = _mapping.FromEntityToResponseWithDetails(response);
+            return responseMapped;
+        }
     }
 }

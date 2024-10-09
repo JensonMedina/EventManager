@@ -1,15 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Entities
+namespace Application.Models.Response
 {
-    public class TaskEvent
+    public class TaskReponse
     {
         public int Id { get; set; }
-        [Column(TypeName = "varchar(50)")]
         public string? NameTask { get; set; }
         public bool State { get; set; }
-        public int EventId { get; set; }
-        public Event? Event { get; set; }
 
     }
 }

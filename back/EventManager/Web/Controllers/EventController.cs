@@ -31,6 +31,20 @@ namespace Web.Controllers
             return Ok(eventsReponse);
 
         }
+        [HttpGet("{idEvent}")]
+        public async Task<ActionResult> GetEventByIdAsync([FromRoute] int idEvent)
+        {
+            if (idEvent <= 0)
+            {
+                return BadRequest("El id del evento es obligatorio");
+            }
+            var response = await _eventService.GetEventById(idEvent);
+            if (response == null)
+            {
+                return NotFound("No se encontró un evento con ese id.");
+            }
+            return Ok(new { success = true, data = response });
+        }
 
         [HttpPost("[action]")]
         public async Task<ActionResult> CreateEventAsync(EventRequest request)
