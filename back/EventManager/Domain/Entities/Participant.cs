@@ -8,7 +8,7 @@ namespace Domain.Entities
         [Column(TypeName = "varchar(20)")]
         public string? Name { get; set; }
         [Column(TypeName = "varchar(20)")]
-        public string? LastName { get; set; }
+        public string? Email { get; set; }
         public int EventId { get; set; }
         public Event? Event { get; set; }
     }

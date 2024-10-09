@@ -11,22 +11,48 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CardEvent from "@/components/cardEvent/CardEvent";
-import { EventContext } from "@/services/context/EventContext";
+import { EventContext } from "@/services/eventContext/EventContext";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { GetAllEvents } = useContext(EventContext);
+  const [filterState, setFilterState] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+
   useEffect(() => {
     const getEvents = async () => {
       const events = await GetAllEvents();
       if (events) {
         setEvents(events);
+        setFilteredEvents(events);
       }
     };
-
     getEvents();
   }, []);
+
+  useEffect(() => {
+    let filtered = [...events];
+
+    if (filterState === "active") {
+      filtered = filtered.filter(
+        (event) => new Date() < new Date(event.eventDate)
+      );
+    } else if (filterState === "finished") {
+      filtered = filtered.filter(
+        (event) => new Date() >= new Date(event.eventDate)
+      );
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter((event) =>
+        event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredEvents(filtered);
+  }, [filterState, searchTerm, events]);
 
   return (
     <div className="container mx-auto p-6">
@@ -45,13 +71,14 @@ const Dashboard = () => {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Buscar eventos..."
+              placeholder="Buscar eventos por su nombre..."
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
           </div>
         </div>
-        <Select>
+        <Select onValueChange={(value) => setFilterState(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filtrar por estado" />
           </SelectTrigger>
@@ -64,7 +91,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {events.map((event) => (
+        {filteredEvents.map((event) => (
           <CardEvent key={event.id} event={event} />
         ))}
       </div>
