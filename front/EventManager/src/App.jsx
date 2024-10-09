@@ -4,6 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import AuthPage from "./screens/AuthPage";
 import Dashboard from "./screens/Dashboard";
 import Protected from "./routes/Protected";
+import CreateEvent from "./screens/CreateEvent";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -14,11 +15,14 @@ const App = () => {
     {
       path: "/",
       element: (
-        <Protected>
-          <MainLayout />
-        </Protected>
+        // <Protected>
+        <MainLayout />
+        // </Protected>
       ),
-      children: [{ path: "/", element: <Dashboard /> }],
+      children: [
+        { path: "/", element: <Dashboard /> },
+        { path: "/create-event", element: <CreateEvent /> },
+      ],
     },
   ]);
   return (

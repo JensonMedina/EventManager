@@ -9,6 +9,7 @@ namespace Domain.Entities
         public string? EventName { get; set; }
         public DateTime? EventDate { get; set; }
         public string? EventLocation { get; set; }
+        public string? EventDescription { get; set; }
         public int UserId { get; set; }
         public User? User { get; set; }
         public List<Participant> Participants { get; set; } = new List<Participant>();
