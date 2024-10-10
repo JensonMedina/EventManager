@@ -37,14 +37,16 @@ namespace Application.Services
             return eventsMapped;
         }
 
-        public async Task<EventDetailResponse?> GetEventById(int idEvent)
+        public async Task<EventResponse?> GetEventById(int idEvent, int idUser)
         {
-            var response = await _eventRepository.GetEventByIdAsync(idEvent);
+            var eventsEntities = await _eventRepository.GetAllEventsAsync(idUser);
+            var response = eventsEntities.FirstOrDefault(e => e.Id == idEvent);
+            //var response = await _eventRepository.GetEventByIdAsync(idEvent);
             if (response == null)
             {
-                return null;
+                return null; //no existe un evento con ese id
             }
-            var responseMapped = _mapping.FromEntityToResponseWithDetails(response);
+            var responseMapped = _mapping.FromEntityToResponse(response);
             return responseMapped;
         }
     }

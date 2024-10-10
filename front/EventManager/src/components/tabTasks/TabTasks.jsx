@@ -29,7 +29,7 @@ const TabTasks = ({ completedTasks, totalTasks, progress, tasks }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Progress value={progress} className="mb-4" />
+        {!isNaN(progress) && <Progress value={progress} className="mb-4" />}
         <Table>
           <TableHeader>
             <TableRow>

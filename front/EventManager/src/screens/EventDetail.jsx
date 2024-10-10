@@ -1,93 +1,69 @@
-import React from "react";
-
+import React, { useContext, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import EventDetails from "@/components/eventDetails/EventDetails";
 import TabParticipants from "@/components/tabParticipants/TabParticipants";
 import TabTasks from "@/components/tabTasks/TabTasks";
+import { useParams } from "react-router-dom";
+import { EventContext } from "@/services/eventContext/EventContext";
 
 const EventDetail = () => {
-  const event = {
-    id: "1",
-    name: "Conferencia de Tecnología 2023",
-    date: "2023-08-15",
-    time: "09:00 AM",
-    location: "Centro de Convenciones",
-    description:
-      "Una conferencia sobre las últimas tendencias en tecnología y desarrollo de software.",
-    status: "active",
-    participants: [
-      {
-        id: "1",
-        name: "Ana García",
-        email: "ana@example.com",
-        avatar: "/placeholder.svg",
-      },
-      {
-        id: "2",
-        name: "Carlos López",
-        email: "carlos@example.com",
-        avatar: "/placeholder.svg",
-      },
-      {
-        id: "3",
-        name: "Elena Martínez",
-        email: "elena@example.com",
-        avatar: "/placeholder.svg",
-      },
-      {
-        id: "4",
-        name: "Jenson Medina",
-        avatar: "/placeholder.svg",
-      },
-    ],
-    tasks: [
-      {
-        id: "1",
-        name: "Reservar sala de conferencias",
-        assignee: "Ana García",
-        dueDate: "2023-07-15",
-        status: "completed",
-      },
-      {
-        id: "2",
-        name: "Enviar invitaciones",
-        assignee: "Carlos López",
-        dueDate: "2023-07-20",
-        status: "completed",
-      },
-      {
-        id: "3",
-        name: "Preparar presentaciones",
-        assignee: "Elena Martínez",
-        dueDate: "2023-08-01",
-        status: "in-progress",
-      },
-      {
-        id: "4",
-        name: "Coordinar catering",
-        assignee: "Ana García",
-        dueDate: "2023-08-10",
-        status: "pending",
-      },
-    ],
-  };
+  const { idEvent } = useParams();
+  const { GetEventById } = useContext(EventContext);
+  const [event, setEvent] = useState(null);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [eventStatus, setEventStatus] = useState(true); //true = activo, false = finalizado
+  const [totalTasks, setTotalTasks] = useState(0);
+  const [completedTasks, setCompletedTasks] = useState(0);
+  const [progress, setProgress] = useState(0);
 
-  const completedTasks = event.tasks.filter(
-    (task) => task.status === "completed"
-  ).length;
-  const totalTasks = event.tasks.length;
-  const progress = (completedTasks / totalTasks) * 100;
+  useEffect(() => {
+    const getEvent = async () => {
+      const eventFromApi = await GetEventById(idEvent);
+      if (eventFromApi) {
+        setEvent(eventFromApi.data);
+      }
+    };
+    getEvent();
+  }, [idEvent, GetEventById]);
+
+  useEffect(() => {
+    if (!event) return;
+
+    const eventDate = new Date(event.eventDate);
+    setDate(eventDate.toLocaleDateString());
+    setTime(
+      eventDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+
+    const isActive = new Date() < eventDate;
+    setEventStatus(isActive);
+    const totalTasks = event.tasks.length;
+    setTotalTasks(totalTasks);
+
+    const completedTasks = event.tasks.filter((task) => task.state).length;
+    setCompletedTasks(completedTasks);
+
+    const progress = (completedTasks / totalTasks) * 100;
+    setProgress(progress);
+  }, [event]);
+
+  if (!event) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div className="container mx-auto p-6">
       <EventDetails
-        eventName={event.name}
-        eventStatus={event.status}
-        eventDate={event.date}
-        eventTime={event.time}
-        eventLocation={event.location}
-        eventDescription={event.description}
+        eventName={event.eventName}
+        eventStatus={eventStatus}
+        eventDate={date}
+        eventTime={time}
+        eventLocation={event.eventLocation}
+        eventDescription={event.eventDescription}
         participantsLength={event.participants.length}
       />
       <Tabs defaultValue="participants" className="mb-6">

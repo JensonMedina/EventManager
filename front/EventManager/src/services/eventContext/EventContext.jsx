@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyODUwMjgzOCwiZXhwIjoxNzI4NTg5MjM4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.xGlPJRWRrUkH6r7y5IpRzyyGym45He9shBf4mjP7bIs";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyODU5MTMzNSwiZXhwIjoxNzI4Njc3NzM1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.6MwmVLc1odWYIivaFzjDZBSMpHb5xiaNGcenA4Zb49c";
 
   const GetAllEvents = async () => {
     try {
@@ -12,7 +12,7 @@ const EventProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Inserta tu token aquí
+          Authorization: `Bearer ${token}`,
           accept: "*/*",
         },
       });
@@ -29,10 +29,28 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const GetEventById = async (id) => {
-    const response = await fetch(`http://localhost:3000/events/${id}`);
-    const data = await response.json();
-    return data;
+  const GetEventById = async (eventId) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/Event/${eventId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al obtener los eventos:", error);
+      return null;
+    }
   };
 
   const AddEvent = async (event) => {

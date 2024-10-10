@@ -19,20 +19,9 @@ namespace Application.Mappings
         }
         public EventResponse FromEntityToResponse(Event entity)
         {
-            return new EventResponse
-            {
-                Id = entity.Id,
-                EventName = entity.EventName,
-                EventDate = entity.EventDate,
-                EventLocation = entity.EventLocation,
-                EventDescription = entity.EventDescription,
-            };
-        }
-        public EventDetailResponse FromEntityToResponseWithDetails(Event entity)
-        {
             var participantMapping = new ParticipantMapping();
             var taskMapping = new TaskMapping();
-            return new EventDetailResponse
+            return new EventResponse
             {
                 Id = entity.Id,
                 EventName = entity.EventName,
@@ -43,6 +32,7 @@ namespace Application.Mappings
                 Tasks = entity.TaskList.Select(t => taskMapping.FromEntityToResponse(t)).ToList()
             };
         }
+
     }
 }
 

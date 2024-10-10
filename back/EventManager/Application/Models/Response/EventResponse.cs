@@ -7,5 +7,7 @@
         public DateTime? EventDate { get; set; }
         public string? EventLocation { get; set; }
         public string? EventDescription { get; set; }
+        public List<ParticipantResponse>? Participants { get; set; }
+        public List<TaskReponse>? Tasks { get; set; }
     }
 }
