@@ -12,13 +12,13 @@ namespace Infrastructure.Data
         public async Task<List<Event>> GetAllEventsAsync(int userId)
         {
             var events = await _context.Events
+                                        .Include(e => e.Participants).
+                                        Include(e => e.TaskList)
                                        .Where(e => e.UserId == userId)
                                        .ToListAsync();
-
-
-
             return events;
         }
+
 
     }
 }

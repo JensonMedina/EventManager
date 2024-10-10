@@ -22,12 +22,18 @@ const EventDetails = ({
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{eventName}</h1>
-        <div className="space-x-2">
+        <div className="space-x-2 flex">
           <Button variant="outline">
-            <Edit className="mr-2 h-4 w-4" /> Editar
+            <Edit className="h-4 w-4" />
+            {/* Texto visible solo en pantallas medianas o más grandes */}
+            <span className="hidden md:inline ml-2">Editar</span>
           </Button>
+
+          {/* Botón de eliminar */}
           <Button variant="destructive">
-            <Trash2 className="mr-2 h-4 w-4" /> Eliminar
+            <Trash2 className="h-4 w-4" />
+            {/* Texto visible solo en pantallas medianas o más grandes */}
+            <span className="hidden md:inline ml-2">Eliminar</span>
           </Button>
         </div>
       </div>
@@ -36,8 +42,8 @@ const EventDetails = ({
         <CardHeader>
           <CardTitle>Detalles del Evento</CardTitle>
           <CardDescription>
-            <Badge variant={eventStatus === "active" ? "default" : "secondary"}>
-              {eventStatus === "active" ? "Activo" : "Finalizado"}
+            <Badge variant={eventStatus ? "default" : "destructive"}>
+              {eventStatus ? "Activo" : "Finalizado"}
             </Badge>
           </CardDescription>
         </CardHeader>

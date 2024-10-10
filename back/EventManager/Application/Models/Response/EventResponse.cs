@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Models.Response
+﻿namespace Application.Models.Response
 {
     public class EventResponse
     {
@@ -13,5 +7,7 @@ namespace Application.Models.Response
         public DateTime? EventDate { get; set; }
         public string? EventLocation { get; set; }
         public string? EventDescription { get; set; }
+        public List<ParticipantResponse>? Participants { get; set; }
+        public List<TaskReponse>? Tasks { get; set; }
     }
 }

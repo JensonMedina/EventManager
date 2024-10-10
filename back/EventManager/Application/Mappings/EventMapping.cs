@@ -1,11 +1,6 @@
 ﻿using Application.Models.Request;
 using Application.Models.Response;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappings
 {
@@ -24,6 +19,8 @@ namespace Application.Mappings
         }
         public EventResponse FromEntityToResponse(Event entity)
         {
+            var participantMapping = new ParticipantMapping();
+            var taskMapping = new TaskMapping();
             return new EventResponse
             {
                 Id = entity.Id,
@@ -31,7 +28,11 @@ namespace Application.Mappings
                 EventDate = entity.EventDate,
                 EventLocation = entity.EventLocation,
                 EventDescription = entity.EventDescription,
+                Participants = entity.Participants.Select(p => participantMapping.FromEntityToResonse(p)).ToList(),
+                Tasks = entity.TaskList.Select(t => taskMapping.FromEntityToResponse(t)).ToList()
             };
         }
+
     }
 }
+

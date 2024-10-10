@@ -31,6 +31,25 @@ namespace Web.Controllers
             return Ok(eventsReponse);
 
         }
+        [HttpGet("{idEvent}")]
+        public async Task<ActionResult> GetEventByIdAsync([FromRoute] int idEvent)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                return Unauthorized(); // Si no está el claim, no hay un usuario autorizado.
+            }
+            if (idEvent <= 0)
+            {
+                return BadRequest("El id del evento es obligatorio");
+            }
+            var response = await _eventService.GetEventById(idEvent, int.Parse(userIdClaim));
+            if (response == null)
+            {
+                return NotFound("No se encontró un evento con ese id.");
+            }
+            return Ok(new { success = true, data = response });
+        }
 
         [HttpPost("[action]")]
         public async Task<ActionResult> CreateEventAsync(EventRequest request)

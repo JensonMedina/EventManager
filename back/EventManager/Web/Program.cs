@@ -79,6 +79,7 @@ builder.Services.Configure<AuthenticationServiceOptions>(builder.Configuration.G
 builder.Services.AddScoped<UserMapping>();
 builder.Services.AddScoped<EventMapping>();
 builder.Services.AddScoped<ParticipantMapping>();
+builder.Services.AddScoped<TaskMapping>();
 
 
 builder.Services.AddCors(options =>

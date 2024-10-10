@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
 const CardEvent = ({ event }) => {
   const eventDate = new Date(event.eventDate);
   const date = eventDate.toLocaleDateString();
@@ -41,7 +42,9 @@ const CardEvent = ({ event }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuItem>Ver detalles</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to={`/event-detail/${event.id}`}>Ver detalles</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem>Editar evento</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-red-600">
@@ -67,7 +70,7 @@ const CardEvent = ({ event }) => {
         </div>
         <div className="flex items-center space-x-2">
           <Users className="h-4 w-4" />
-          <span>{event.participants} participantes</span>
+          <span>{event.participants.length} participantes</span>
         </div>
       </CardContent>
       <CardFooter>

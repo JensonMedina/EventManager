@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241009223614_corregi un error en la migracion anterior")]
+    partial class corregiunerrorenlamigracionanterior
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -73,6 +76,9 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AssginedParticipantId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
@@ -83,6 +89,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssginedParticipantId");
 
                     b.HasIndex("EventId");
 
@@ -139,11 +147,17 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.TaskEvent", b =>
                 {
+                    b.HasOne("Domain.Entities.Participant", "AssginedParticipant")
+                        .WithMany()
+                        .HasForeignKey("AssginedParticipantId");
+
                     b.HasOne("Domain.Entities.Event", "Event")
                         .WithMany("TaskList")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AssginedParticipant");
 
                     b.Navigation("Event");
                 });
