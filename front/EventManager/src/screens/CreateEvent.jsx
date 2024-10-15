@@ -17,7 +17,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
 import InputParticipant from "@/components/inputParticipant/InputParticipant";
-import InputTask from "@/components/inputTask/InputTask";
 
 const CreateEvent = () => {
   const [eventName, setEventName] = useState("");
@@ -31,7 +30,6 @@ const CreateEvent = () => {
   const { toast } = useToast();
 
   const [participants, setParticipants] = useState([{ name: "", email: "" }]);
-  const [tasks, setTasks] = useState([{ name: "", assignee: "" }]);
 
   const addParticipant = () => {
     setParticipants([...participants, { name: "", email: "" }]);
@@ -39,14 +37,6 @@ const CreateEvent = () => {
 
   const removeParticipant = (index) => {
     setParticipants(participants.filter((_, i) => i !== index));
-  };
-
-  const addTask = () => {
-    setTasks([...tasks, { name: "", assignee: "", dueDate: "" }]);
-  };
-
-  const removeTask = (index) => {
-    setTasks(tasks.filter((_, i) => i !== index));
   };
 
   const handleChange = (e) => {
@@ -213,24 +203,6 @@ const CreateEvent = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Tareas</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {tasks.map((task, index) => (
-              <InputTask
-                key={index}
-                participants={participants}
-                index={index}
-                removeTask={removeTask}
-              />
-            ))}
-            <Button onClick={addTask} variant="outline" type="button">
-              <Plus className="mr-2 h-4 w-4" /> Agregar Tarea
-            </Button>
-          </CardContent>
-        </Card>
         {error.msg && <p className="text-red-500">{error.msg}</p>}
         <CardFooter className="flex justify-end space-x-2">
           <Button variant="outline">

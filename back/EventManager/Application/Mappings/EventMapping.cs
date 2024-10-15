@@ -28,7 +28,7 @@ namespace Application.Mappings
                 EventDate = entity.EventDate,
                 EventLocation = entity.EventLocation,
                 EventDescription = entity.EventDescription,
-                Participants = entity.Participants.Select(p => participantMapping.FromEntityToResonse(p)).ToList(),
+                Participants = entity.Participants.Select(p => participantMapping.FromEntityToResponse(p)).ToList(),
                 Tasks = entity.TaskList.Select(t => taskMapping.FromEntityToResponse(t)).ToList()
             };
         }

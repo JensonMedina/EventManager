@@ -15,7 +15,7 @@ namespace Application.Mappings
                 EventId = idEvent,
             };
         }
-        public ParticipantResponse FromEntityToResonse(Participant entity)
+        public ParticipantResponse FromEntityToResponse(Participant entity)
         {
             return new ParticipantResponse
             {

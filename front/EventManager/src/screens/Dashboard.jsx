@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-
+  const [load, setLoad] = useState(false);
   useEffect(() => {
     const getEvents = async () => {
       const events = await GetAllEvents();
@@ -30,7 +30,7 @@ const Dashboard = () => {
       }
     };
     getEvents();
-  }, []);
+  }, [load]);
 
   useEffect(() => {
     let filtered = [...events];
@@ -92,7 +92,12 @@ const Dashboard = () => {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredEvents.map((event) => (
-          <CardEvent key={event.id} event={event} />
+          <CardEvent
+            key={event.id}
+            event={event}
+            load={load}
+            setLoad={setLoad}
+          />
         ))}
       </div>
     </div>

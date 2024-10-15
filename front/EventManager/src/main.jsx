@@ -6,11 +6,11 @@ import { AuthProvider } from "./services/authentication/AuthenticationContext.js
 import EventProvider from "./services/eventContext/EventContext.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <AuthProvider>
-      <EventProvider>
-        <App />
-      </EventProvider>
-    </AuthProvider>
-  </StrictMode>
+  // <StrictMode>
+  <AuthProvider>
+    <EventProvider>
+      <App />
+    </EventProvider>
+  </AuthProvider>
+  // </StrictMode>
 );

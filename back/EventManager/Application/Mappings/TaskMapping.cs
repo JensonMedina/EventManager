@@ -1,18 +1,30 @@
-﻿using Application.Models.Response;
+﻿using Application.Models.Request;
+using Application.Models.Response;
 using Domain.Entities;
 
 namespace Application.Mappings
 {
     public class TaskMapping
     {
-        public TaskReponse FromEntityToResponse(TaskEvent entity)
+        public TaskResponse FromEntityToResponse(TaskEvent entity)
         {
-           
-            return new TaskReponse
+            var participantMapping = new ParticipantMapping();
+            return new TaskResponse
             {
                 Id = entity.Id,
                 NameTask = entity.NameTask,
                 State = entity.State,
+                AssignedParticipant = participantMapping.FromEntityToResponse(entity.AssignedParticipant),
+            };
+        }
+        public TaskEvent FromRequestToEntity(TaskRequest request, int eventId)
+        {
+            return new TaskEvent
+            {
+                NameTask = request.NameTask,
+                State = false,
+                AssignedParticipantId = request.AssignedParticipantId,
+                EventId = eventId,
             };
         }
     }

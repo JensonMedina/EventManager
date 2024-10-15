@@ -16,6 +16,7 @@ const EventDetail = () => {
   const [totalTasks, setTotalTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [load, setLoad] = useState(false);
 
   useEffect(() => {
     const getEvent = async () => {
@@ -25,7 +26,7 @@ const EventDetail = () => {
       }
     };
     getEvent();
-  }, [idEvent, GetEventById]);
+  }, [idEvent, GetEventById, load]);
 
   useEffect(() => {
     if (!event) return;
@@ -58,6 +59,7 @@ const EventDetail = () => {
   return (
     <div className="container mx-auto p-6">
       <EventDetails
+        eventId={idEvent}
         eventName={event.eventName}
         eventStatus={eventStatus}
         eventDate={date}
@@ -72,14 +74,23 @@ const EventDetail = () => {
           <TabsTrigger value="tasks">Tareas</TabsTrigger>
         </TabsList>
         <TabsContent value="participants">
-          <TabParticipants participants={event.participants} />
+          <TabParticipants
+            idEvent={idEvent}
+            participants={event.participants}
+            load={load}
+            setLoad={setLoad}
+          />
         </TabsContent>
         <TabsContent value="tasks">
           <TabTasks
+            idEvent={event.id}
             completedTasks={completedTasks}
             totalTasks={totalTasks}
             progress={progress}
             tasks={event.tasks}
+            participants={event.participants}
+            load={load}
+            setLoad={setLoad}
           />
         </TabsContent>
       </Tabs>

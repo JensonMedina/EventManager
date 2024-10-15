@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { Calendar, MapPin, Users, Clock, Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { replace, useNavigate } from "react-router-dom";
+import { EventContext } from "@/services/eventContext/EventContext";
+import AlertDialogDelete from "../alertDialogDelete/AlertDialogDelete";
 const EventDetails = ({
+  eventId,
   eventName,
   eventStatus,
   eventDate,
@@ -18,6 +22,21 @@ const EventDetails = ({
   eventDescription,
   participantsLength,
 }) => {
+  const navigate = useNavigate();
+  const { DeleteEvent } = useContext(EventContext);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const handleDelete = async () => {
+    //eliminar evento y despues redirigir al dashboard.
+    //preguntar si esta seguro y solo si acepta se elimina el evento.
+    const isSucces = await DeleteEvent(eventId);
+    if (!isSucces) {
+      console.log("Error al eliminar el evento.");
+      return;
+    }
+    navigate("/", replace);
+  };
+  const openDialog = () => setIsDialogOpen(true);
+  const closeDialog = () => setIsDialogOpen(false);
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -30,7 +49,7 @@ const EventDetails = ({
           </Button>
 
           {/* Botón de eliminar */}
-          <Button variant="destructive">
+          <Button variant="destructive" onClick={openDialog}>
             <Trash2 className="h-4 w-4" />
             {/* Texto visible solo en pantallas medianas o más grandes */}
             <span className="hidden md:inline ml-2">Eliminar</span>
@@ -69,6 +88,14 @@ const EventDetails = ({
           <p className="mt-4">{eventDescription}</p>
         </CardContent>
       </Card>
+      <AlertDialogDelete
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onConfirm={() => {
+          handleDelete();
+          closeDialog();
+        }}
+      />
     </div>
   );
 };

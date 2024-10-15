@@ -3,7 +3,9 @@ using Application.Mappings;
 using Application.Models.Request;
 using Application.Models.Response;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces;
+using System.Net;
 
 namespace Application.Services
 {
@@ -27,6 +29,20 @@ namespace Application.Services
             var responseMapped = _mapping.FromEntityToResponse(response);
             return responseMapped;
 
+        }
+
+        public async Task DeleteEvent(int idEvent, int idUser)
+        {
+            var entity = await _eventRepositoryBase.GetByIdAsync(idEvent);
+            if (entity == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "No se encontró un evento con ese id.");
+            }
+            if (entity.UserId != idUser)
+            {
+                throw new NotAllowedException(HttpStatusCode.Forbidden, "El evento no pertenece al usuario.");
+            }
+            await _eventRepositoryBase.DeleteAsync(entity);
         }
 
         public async Task<List<EventResponse>> GetAllEventsAsync(int idUser)

@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyODU5MTMzNSwiZXhwIjoxNzI4Njc3NzM1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.6MwmVLc1odWYIivaFzjDZBSMpHb5xiaNGcenA4Zb49c";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyOTAwMzc5MiwiZXhwIjoxNzI5MDkwMTkyLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.NdepXH2fPzsXthswC4_IbUSFjTr7junVXyZhL4ICOq4";
 
   const GetAllEvents = async () => {
     try {
@@ -90,12 +90,32 @@ const EventProvider = ({ children }) => {
     return data;
   };
 
-  const DeleteEvent = async (id) => {
-    const response = await fetch(`http://localhost:3000/events/${id}`, {
-      method: "DELETE",
-    });
-    const data = await response.json();
-    return data;
+  const DeleteEvent = async (idEvent) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/Event/${idEvent}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        // No Content: Devolvemos true porque se eliminó correctamente.
+        return true;
+      }
+
+      // Si no es 204, intentamos convertir la respuesta a JSON.
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al eliminar el evento: ", error);
+      return null;
+    }
   };
 
   const AddParticipant = async (eventId, participants) => {
@@ -125,7 +145,15 @@ const EventProvider = ({ children }) => {
   const GetParticipants = async (eventId) => {
     try {
       const response = await fetch(
-        `https://localhost:7299/api/events/Participant/${eventId}`
+        `https://localhost:7299/api/events/Participant/${eventId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+        }
       );
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
@@ -137,6 +165,30 @@ const EventProvider = ({ children }) => {
       return null;
     }
   };
+  const AddTask = async (eventId, listTask) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/Task/${eventId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+          body: JSON.stringify(listTask),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al agregar la tarea: ", error);
+      return null;
+    }
+  };
   const data = {
     GetAllEvents,
     GetEventById,
@@ -145,6 +197,7 @@ const EventProvider = ({ children }) => {
     DeleteEvent,
     AddParticipant,
     GetParticipants,
+    AddTask,
   };
   return <EventContext.Provider value={data}>{children}</EventContext.Provider>;
 };
