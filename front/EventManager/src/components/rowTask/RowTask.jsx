@@ -2,20 +2,18 @@ import React from "react";
 import { CheckCircle, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
-const RowTask = ({ taskName, taskAssignee, taskStatus }) => {
+const RowTask = ({ taskName, assignedParticipant, taskStatus }) => {
   return (
     <TableRow>
       <TableCell>{taskName}</TableCell>
-      <TableCell>{taskAssignee}</TableCell>
+      <TableCell>{assignedParticipant.name}</TableCell>
       <TableCell>
-        {taskStatus === "completed" ? (
+        {taskStatus ? (
           <Badge variant="success">
             <CheckCircle className="mr-1 h-3 w-3" /> Completada
           </Badge>
-        ) : taskStatus === "in-progress" ? (
-          <Badge variant="warning">En progreso</Badge>
         ) : (
-          <Badge variant="secondary">
+          <Badge variant="destructive">
             <XCircle className="mr-1 h-3 w-3" /> Pendiente
           </Badge>
         )}

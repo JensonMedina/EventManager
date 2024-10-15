@@ -68,12 +68,14 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddScoped<IRepositoryBase<User>, EfRepository<User>>();
 builder.Services.AddScoped<IRepositoryBase<Event>, EfRepository<Event>>();
 builder.Services.AddScoped<IRepositoryBase<Participant>, EfRepository<Participant>>();
+builder.Services.AddScoped<IRepositoryBase<TaskEvent>, EfRepository<TaskEvent>>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICustomAuthenticationService, AuthenticationService>();
 builder.Services.Configure<AuthenticationServiceOptions>(builder.Configuration.GetSection(AuthenticationServiceOptions.Authentication));
 builder.Services.AddScoped<UserMapping>();

@@ -27,7 +27,7 @@ namespace Application.Services
             {
                 var entity = _mapping.FromRequestToEntity(participant, idEvent);
                 var response = await _repositoryBase.AddAsync(entity);
-                var responseMapped = _mapping.FromEntityToResonse(response);
+                var responseMapped = _mapping.FromEntityToResponse(response);
                 listReponse.Add(responseMapped);
             }
 
@@ -37,7 +37,7 @@ namespace Application.Services
         public async Task<List<ParticipantResponse>> GetAllParticipantsFromAnEvent(int idEvent)
         {
             var response = await _participantRepository.GetAllParticipantsFromAnEventAsync(idEvent);
-            var responseMapped = response.Select(p => _mapping.FromEntityToResonse(p)).ToList();
+            var responseMapped = response.Select(p => _mapping.FromEntityToResponse(p)).ToList();
             return responseMapped;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Models.Request;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -62,7 +63,11 @@ namespace Web.Controllers
 
             if (string.IsNullOrEmpty(request.EventName) || !request.EventDate.HasValue || string.IsNullOrEmpty(request.EventLocation))
             {
-                return BadRequest("El nombre, fecha y ubicación del evento son obligatorios.");
+                return BadRequest(new
+                {
+                    Succes = false,
+                    Message = "El nombre, fecha y ubicación del evento son obligatorios."
+                });
             }
 
             try
@@ -74,6 +79,29 @@ namespace Web.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpDelete("{idEvent}")]
+        public async Task<ActionResult> DeleteEvent([FromRoute] int idEvent)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                return Unauthorized(); // Si no está el claim, no hay un usuario autorizado.
+            }
+            try
+            {
+                await _eventService.DeleteEvent(idEvent, int.Parse(userIdClaim));
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+
+                return StatusCode((int)ex.Code, new { Success = false, Msg = ex.Msg });
+            }
+            catch (NotAllowedException ex)
+            {
+                return StatusCode((int)ex.Code, new { Success = false, Msg = ex.Msg });
             }
         }
 
