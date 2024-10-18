@@ -36,7 +36,7 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
   const removeParticipant = (index) => {
     setParticipantsInput((prev) => {
       const newParticipants = [...prev];
-      newParticipants.splice(index, 1); // Eliminar el participante en la posición indicada
+      newParticipants.splice(index, 1);
       return newParticipants;
     });
     setError({});
@@ -44,8 +44,8 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
 
   const handleFormAddParticipants = async (e) => {
     e.preventDefault();
-    // const hasEmptyName = participantsInput.some((p) => p.name.trim() === "");
-    if (!formAddTaskValid) {
+    // const hasEmptyName = ;
+    if (participantsInput.some((p) => p.name.trim() === "")) {
       setError({ msg: "Todos los participantes deben tener un nombre." });
       return;
     }

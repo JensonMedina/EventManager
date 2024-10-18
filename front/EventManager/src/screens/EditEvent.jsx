@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,27 +17,61 @@ import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
 import InputParticipant from "@/components/inputParticipant/InputParticipant";
+import InputTask from "@/components/inputTask/InputTask";
+import { useParams } from "react-router-dom";
 
-const CreateEvent = () => {
+const EditEvent = () => {
+  const { idEvent } = useParams();
+  const { GetEventById, UpdateEvent } = useContext(EventContext);
+  const [event, setEvent] = useState(null);
+
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [eventLocation, setEventLocation] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [error, setError] = useState({});
-  const { AddEvent } = useContext(EventContext);
-  const { AddParticipant } = useContext(EventContext);
+  const [participants, setParticipants] = useState([
+    { id: "", name: "", email: "" },
+  ]);
+  const [tasks, setTasks] = useState([
+    {
+      id: "",
+      nameTask: "",
+      assignedParticipant: { id: "", name: "", email: "" },
+    },
+  ]);
+
   const { toast } = useToast();
+  useEffect(() => {
+    const getEvent = async () => {
+      const eventFromApi = await GetEventById(idEvent);
+      if (eventFromApi) {
+        setEvent(eventFromApi.data);
+      }
+    };
+    getEvent();
+  }, [idEvent, GetEventById]);
 
-  const [participants, setParticipants] = useState([{ name: "", email: "" }]);
+  useEffect(() => {
+    if (!event) return;
 
-  const addParticipant = () => {
-    setParticipants([...participants, { name: "", email: "" }]);
-  };
+    const eventDate = new Date(event.eventDate);
+    const isoDate = eventDate.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+    setEventDate(isoDate);
 
-  const removeParticipant = (index) => {
-    setParticipants(participants.filter((_, i) => i !== index));
-  };
+    setEventTime(
+      eventDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+    setEventName(event.eventName);
+    setEventLocation(event.eventLocation);
+    setEventDescription(event.eventDescription);
+    setParticipants(event.participants);
+    setTasks(event.tasks);
+  }, [event]);
 
   const handleChange = (e) => {
     setError({});
@@ -74,53 +108,37 @@ const CreateEvent = () => {
       });
       return;
     }
-    for (let i = 0; i < participants.length; i++) {
-      if (participants[i].name.trim() === "") {
-        setError({ msg: "El nombre de los participantes es obligatorio." });
-        return;
-      }
+    if (participants.some((p) => p.name.trim() === "")) {
+      setError({ msg: "Todos los participantes deben tener un nombre." });
+      return;
     }
     const dateTimeString = `${eventDate}T${eventTime}:00`;
-    const newEvent = {
+    const eventUpdated = {
       eventName: eventName,
       eventDate: dateTimeString,
       eventLocation: eventLocation,
       eventDescription: eventDescription,
     };
-
-    const isCreatedSucces = await AddEvent(newEvent);
-    if (!isCreatedSucces) {
-      showToast("Error al crear el evento.");
-      return;
+    const isSuccess = await UpdateEvent(idEvent, eventUpdated);
+    if (isSuccess) {
+      showToast("Evento actualizado correctamente");
+    } else {
+      showToast("Error al actualizar evento");
     }
-    showToast("Se creó el evento con exito.");
-    if (participants.length > 0) {
-      const idEvent = isCreatedSucces.data.id;
-      if (idEvent !== null) {
-        await AddParticipant(idEvent, participants);
-      }
-    }
+  };
 
-    cleanForm();
-  };
-  const cleanForm = () => {
-    setEventName("");
-    setEventDate("");
-    setEventTime("");
-    setEventLocation("");
-    setEventDescription("");
-    setParticipants([{ name: "", email: "" }]);
-    setError({});
-  };
   const showToast = (msg) => {
     toast({
       description: msg,
     });
   };
+  if (!event) {
+    return <div>Cargando...</div>;
+  }
   return (
     <div className="container mx-auto p-6">
       <Toaster />
-      <h1 className="text-3xl font-bold mb-6">Crear Nuevo Evento</h1>
+      <h1 className="text-3xl font-bold mb-6">Editar evento</h1>
       <form onSubmit={handleSubmit}>
         <Card className="mb-6">
           <CardHeader>
@@ -181,37 +199,16 @@ const CreateEvent = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Participantes</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {participants.map((participant, index) => (
-              <InputParticipant
-                key={index}
-                index={index}
-                setParticipants={setParticipants}
-                setError={setError}
-                removeParticipant={removeParticipant}
-                participant={participant}
-              />
-            ))}
-            <Button onClick={addParticipant} variant="outline" type="button">
-              <Plus className="mr-2 h-4 w-4" /> Agregar Participante
-            </Button>
-          </CardContent>
-        </Card>
-
         {error.msg && <p className="text-red-500">{error.msg}</p>}
         <CardFooter className="flex justify-end space-x-2">
           <Button variant="outline">
             <Link to={"/"}>Cancelar</Link>
           </Button>
-          <Button type="submit">Crear Evento</Button>
+          <Button type="submit">Guardar cambios</Button>
         </CardFooter>
       </form>
     </div>
   );
 };
 
-export default CreateEvent;
+export default EditEvent;

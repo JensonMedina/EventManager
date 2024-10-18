@@ -9,5 +9,6 @@ namespace Application.Interfaces
         Task<EventResponse> AddEventAsync(EventRequest request, int idUser);
         Task<EventResponse?> GetEventById(int idEvent, int idUser);
         Task DeleteEvent(int idEvent, int idUser);
+        Task UpdateEvent(int idEvent, int iUser, EventRequest request);
     }
 }

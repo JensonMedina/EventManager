@@ -6,6 +6,7 @@ import Dashboard from "./screens/Dashboard";
 import Protected from "./routes/Protected";
 import CreateEvent from "./screens/CreateEvent";
 import EventDetail from "./screens/EventDetail";
+import EditEvent from "./screens/EditEvent";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -24,6 +25,7 @@ const App = () => {
         { path: "/", element: <Dashboard /> },
         { path: "/create-event", element: <CreateEvent /> },
         { path: "/event-detail/:idEvent", element: <EventDetail /> },
+        { path: "/edit-event/:idEvent", element: <EditEvent /> },
       ],
     },
   ]);

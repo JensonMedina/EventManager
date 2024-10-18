@@ -81,6 +81,30 @@ namespace Web.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
+
+        [HttpPut("{idEvent}")]
+        public async Task<ActionResult> UpdateEvent([FromRoute] int idEvent, [FromBody] EventRequest request)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                return Unauthorized(); // Si no está el claim, no hay un usuario autorizado.
+            }
+            try
+            {
+                await _eventService.UpdateEvent(idEvent, int.Parse(userIdClaim), request);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return StatusCode((int)ex.Code, new { Success = false, Msg = ex.Msg });
+            }
+            catch (NotAllowedException ex)
+            {
+                return StatusCode((int)ex.Code, new { Success = false, Msg = ex.Msg });
+            }
+        }
+
         [HttpDelete("{idEvent}")]
         public async Task<ActionResult> DeleteEvent([FromRoute] int idEvent)
         {
