@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { replace, useNavigate } from "react-router-dom";
+import { replace, useNavigate, Link } from "react-router-dom";
 import { EventContext } from "@/services/eventContext/EventContext";
 import AlertDialogDelete from "../alertDialogDelete/AlertDialogDelete";
 const EventDetails = ({
@@ -43,9 +43,11 @@ const EventDetails = ({
         <h1 className="text-3xl font-bold">{eventName}</h1>
         <div className="space-x-2 flex">
           <Button variant="outline">
-            <Edit className="h-4 w-4" />
-            {/* Texto visible solo en pantallas medianas o más grandes */}
-            <span className="hidden md:inline ml-2">Editar</span>
+            <Link to={`/edit-event/${eventId}`}>
+              <Edit className="h-4 w-4" />
+              {/* Texto visible solo en pantallas medianas o más grandes */}
+              <span className="hidden md:inline ml-2">Editar</span>
+            </Link>
           </Button>
 
           {/* Botón de eliminar */}

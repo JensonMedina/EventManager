@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6ImplbnNvbiIsIm5iZiI6MTcyOTAwMzc5MiwiZXhwIjoxNzI5MDkwMTkyLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.NdepXH2fPzsXthswC4_IbUSFjTr7junVXyZhL4ICOq4";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTI2NjU4NiwiZXhwIjoxNzI5MzUyOTg2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.mAAzYNv36QZRU7CP4dNsPpiC_NC24NaCWV-m9gKYldo";
 
   const GetAllEvents = async () => {
     try {
@@ -78,16 +78,32 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const UpdateEvent = async (event) => {
-    const response = await fetch(`http://localhost:3000/events/${event.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(event),
-    });
-    const data = await response.json();
-    return data;
+  const UpdateEvent = async (idEvent, eventRequest) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/Event/${idEvent}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+          body: JSON.stringify(eventRequest),
+        }
+      );
+      if (response.status === 204) {
+        // No Content: Devolvemos true porque se actualizo correctamente.
+        return true;
+      }
+
+      // Si no es 204, intentamos convertir la respuesta a JSON.
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al actualizar el evento:", error);
+      return null;
+    }
   };
 
   const DeleteEvent = async (idEvent) => {

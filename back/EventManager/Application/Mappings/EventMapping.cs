@@ -32,6 +32,15 @@ namespace Application.Mappings
                 Tasks = entity.TaskList.Select(t => taskMapping.FromEntityToResponse(t)).ToList()
             };
         }
+        public Event FromEntityToEntityMapped(Event entity, EventRequest request)
+        {
+
+            entity.EventName = request.EventName ?? entity.EventName;
+            entity.EventDate = request.EventDate ?? entity.EventDate;
+            entity.EventLocation = request.EventLocation ?? entity.EventLocation;
+            entity.EventDescription = request.EventDescription ?? entity.EventDescription;
+            return entity;
+        }
 
     }
 }

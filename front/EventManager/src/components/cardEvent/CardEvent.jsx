@@ -62,7 +62,9 @@ const CardEvent = ({ event, load, setLoad }) => {
                 <DropdownMenuItem>
                   <Link to={`/event-detail/${event.id}`}>Ver detalles</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Editar evento</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link to={`/edit-event/${event.id}`}>Editar evento</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-red-600" onClick={openDialog}>
                   Eliminar evento

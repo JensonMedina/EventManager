@@ -65,5 +65,21 @@ namespace Application.Services
             var responseMapped = _mapping.FromEntityToResponse(response);
             return responseMapped;
         }
+
+        public async Task UpdateEvent(int idEvent, int iUser, EventRequest request)
+        {
+            var entity = await _eventRepositoryBase.GetByIdAsync(idEvent);
+            if (entity == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "No se encontró el evento.");
+            }
+            if (entity.UserId != iUser)
+            {
+                throw new NotAllowedException(HttpStatusCode.Forbidden, "El evento no pertenece a este usuario.");
+            }
+
+            var entityUpdated = _mapping.FromEntityToEntityMapped(entity, request);
+            await _eventRepositoryBase.UpdateAsync(entityUpdated);
+        }
     }
 }
