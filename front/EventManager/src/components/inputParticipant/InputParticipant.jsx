@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
 
 const InputParticipant = ({
-  index,
   removeParticipant,
   setParticipants,
   setError,
@@ -13,9 +12,16 @@ const InputParticipant = ({
   const handleParticipantChange = (e) => {
     setError({});
     const { name, value } = e.target;
+
     setParticipants((prev) => {
       const newParticipants = [...prev];
-      newParticipants[index][name] = value || "";
+      const index = newParticipants.findIndex((p) => p.id === participant.id);
+
+      if (index !== -1) {
+        newParticipants[index][name] = value || "";
+      }
+
+      
       return newParticipants;
     });
   };
@@ -39,7 +45,7 @@ const InputParticipant = ({
       <Button
         variant="outline"
         size="icon"
-        onClick={() => removeParticipant(index)}
+        onClick={() => removeParticipant(participant.id)}
       >
         <Trash2 className="h-4 w-4" />
       </Button>

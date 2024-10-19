@@ -3,7 +3,9 @@ using Application.Mappings;
 using Application.Models.Request;
 using Application.Models.Response;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces;
+using System.Net;
 
 namespace Application.Services
 {
@@ -34,11 +36,24 @@ namespace Application.Services
             return listReponse;
         }
 
-        public async Task<List<ParticipantResponse>> GetAllParticipantsFromAnEvent(int idEvent)
+        //public async Task<List<ParticipantResponse>> GetAllParticipantsFromAnEvent(int idEvent)
+        //{
+        //    var response = await _participantRepository.GetAllParticipantsFromAnEventAsync(idEvent);
+        //    var responseMapped = response.Select(p => _mapping.FromEntityToResponse(p)).ToList();
+        //    return responseMapped;
+        //}
+
+        public async Task UpdateParticipant(int idUser, int idEvent, int idParticipant, ParticipantRequest request)
         {
-            var response = await _participantRepository.GetAllParticipantsFromAnEventAsync(idEvent);
-            var responseMapped = response.Select(p => _mapping.FromEntityToResponse(p)).ToList();
-            return responseMapped;
+            //primero me traigo el participante
+            var participant = await _participantRepository.GetParticipantFromAnEvent(idParticipant, idEvent, idUser);
+            //despues valido si ese participante esta anotado en ese evento.
+            if (participant == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "Participante no encontrado");
+            }
+            var participantUpdated = _mapping.FromEntityToEntityUpdated(participant, request);
+            await _repositoryBase.UpdateAsync(participantUpdated);
         }
     }
 }
