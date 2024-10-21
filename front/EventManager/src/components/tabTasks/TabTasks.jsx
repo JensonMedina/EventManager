@@ -102,15 +102,14 @@ const TabTasks = ({
                 <TableHead>Tarea</TableHead>
                 <TableHead>Asignado a</TableHead>
                 <TableHead>Estado</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {tasks.map((task) => (
                 <RowTask
                   key={task.id}
-                  taskName={task.nameTask}
-                  assignedParticipant={task.assignedParticipant}
-                  taskStatus={task.state}
+                  task={task}
                 />
               ))}
             </TableBody>

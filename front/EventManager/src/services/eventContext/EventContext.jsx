@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTUyMDM4NSwiZXhwIjoxNzI5NjA2Nzg1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.P6GLwI9nxLuvOQg-YDOP7StKmEyiBG2bt5XBrbGdn24";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTUyNDM0NiwiZXhwIjoxNzI5NjEwNzQ2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.ZAb7Eshq4BSXzAPhSCX-MUTVWB2oA1-qIzfezc2uPE0";
 
   const GetAllEvents = async () => {
     try {
@@ -243,7 +243,7 @@ const EventProvider = ({ children }) => {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            accept: "application/json",
+            accept: "*/*",
           },
         }
       );
@@ -254,6 +254,30 @@ const EventProvider = ({ children }) => {
       return data;
     } catch (error) {
       console.log("Error al eliminar el participante ", error);
+      return null;
+    }
+  };
+  const UpdateTask = async (taskId, eventId, taskRequest) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/Task/${taskId}?eventId=${eventId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+          body: JSON.stringify(taskRequest),
+        }
+      );
+      if (response.status === 204) {
+        return true;
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al actualizar la tarea ", error);
       return null;
     }
   };
@@ -268,6 +292,7 @@ const EventProvider = ({ children }) => {
     AddTask,
     UpdateParticipant,
     DeleteParticipant,
+    UpdateTask
   };
   return <EventContext.Provider value={data}>{children}</EventContext.Provider>;
 };

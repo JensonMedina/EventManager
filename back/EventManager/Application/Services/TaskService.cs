@@ -12,14 +12,16 @@ namespace Application.Services
     public class TaskService : ITaskService
     {
         private readonly IRepositoryBase<TaskEvent> _repositoryBase;
+        private readonly IRepositoryBase<Event> _eventRepositoryBase;
+        private readonly IParticipantRepository _participantRepository;
         private readonly IEventRepository _eventRepository;
         private readonly TaskMapping _mapping;
 
-
-
-        public TaskService(IRepositoryBase<TaskEvent> repositoryBase, IEventRepository eventRepository, TaskMapping mapping)
+        public TaskService(IRepositoryBase<TaskEvent> repositoryBase, IRepositoryBase<Event> eventRepositoryBase, IParticipantRepository participantRepository, IEventRepository eventRepository, TaskMapping mapping)
         {
             _repositoryBase = repositoryBase;
+            _eventRepositoryBase = eventRepositoryBase;
+            _participantRepository = participantRepository;
             _eventRepository = eventRepository;
             _mapping = mapping;
         }
@@ -56,6 +58,33 @@ namespace Application.Services
             return listResponse;
         }
 
-
+        public async Task UpdateTask(int userId, int taskId, int eventId, TaskRequest request)
+        {
+            var eventExist = await _eventRepositoryBase.GetByIdAsync(eventId);
+            if (eventExist == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "No se encontró el evento.");
+            }
+            if (eventExist.UserId != userId)
+            {
+                throw new NotAllowedException(HttpStatusCode.Forbidden, "El evento no pertenece a este usuario.");
+            }
+            var taskExist = await _repositoryBase.GetByIdAsync(taskId);
+            if (taskExist == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "No se encontró la tarea.");
+            }
+            if (taskExist.EventId != eventId)
+            {
+                throw new NotAllowedException(HttpStatusCode.Forbidden, "La tarea no pertenece a este evento.");
+            }
+            var participantExist = await _participantRepository.GetParticipantFromAnEvent(request.AssignedParticipantId, eventId, userId);
+            if (participantExist == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "No se encontró el participante al que se quiere aginar la tarea.");
+            }
+            var taskUpdated = _mapping.FromEntityToEntityUpdated(taskExist, request);
+            await _repositoryBase.UpdateAsync(taskUpdated);
+        }
     }
 }
