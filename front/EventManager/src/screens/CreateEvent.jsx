@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
 import InputParticipant from "@/components/inputParticipant/InputParticipant";
+import { v4 as uuidv4 } from "uuid";
 
 const CreateEvent = () => {
   const [eventName, setEventName] = useState("");
@@ -29,14 +30,16 @@ const CreateEvent = () => {
   const { AddParticipant } = useContext(EventContext);
   const { toast } = useToast();
 
-  const [participants, setParticipants] = useState([{ name: "", email: "" }]);
+  const [participants, setParticipants] = useState([
+    { id: uuidv4(), name: "", email: "" },
+  ]);
 
   const addParticipant = () => {
-    setParticipants([...participants, { name: "", email: "" }]);
+    setParticipants([...participants, { id: uuidv4(), name: "", email: "" }]);
   };
 
-  const removeParticipant = (index) => {
-    setParticipants(participants.filter((_, i) => i !== index));
+  const removeParticipant = (id) => {
+    setParticipants(participants.filter((p) => p.id !== id));
   };
 
   const handleChange = (e) => {
@@ -186,10 +189,9 @@ const CreateEvent = () => {
             <CardTitle>Participantes</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {participants.map((participant, index) => (
+            {participants.map((participant) => (
               <InputParticipant
-                key={index}
-                index={index}
+                key={participant.id}
                 setParticipants={setParticipants}
                 setError={setError}
                 removeParticipant={removeParticipant}

@@ -21,7 +21,6 @@ const InputParticipant = ({
         newParticipants[index][name] = value || "";
       }
 
-      
       return newParticipants;
     });
   };
@@ -45,7 +44,10 @@ const InputParticipant = ({
       <Button
         variant="outline"
         size="icon"
-        onClick={() => removeParticipant(participant.id)}
+        onClick={() => {
+          removeParticipant(participant.id);
+          setError({});
+        }}
       >
         <Trash2 className="h-4 w-4" />
       </Button>

@@ -1,10 +1,10 @@
 import { createContext } from "react";
+import { useState } from "react";
 
 export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTU0NDQzNywiZXhwIjoxNzI5NjMwODM3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.-z4zRMC0PtqmNiEs2j6QWOubhJxV6GOku5c8vrSxVkM";
+  const getToken = () => localStorage.getItem("token");
 
   const GetAllEvents = async () => {
     try {
@@ -12,7 +12,7 @@ const EventProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
           accept: "*/*",
         },
       });
@@ -37,7 +37,7 @@ const EventProvider = ({ children }) => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
         }
@@ -61,7 +61,7 @@ const EventProvider = ({ children }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
           body: JSON.stringify(event),
@@ -86,7 +86,7 @@ const EventProvider = ({ children }) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
           body: JSON.stringify(eventRequest),
@@ -114,7 +114,7 @@ const EventProvider = ({ children }) => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
         }
@@ -142,7 +142,7 @@ const EventProvider = ({ children }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
           body: JSON.stringify(participants),
@@ -166,7 +166,7 @@ const EventProvider = ({ children }) => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
         }
@@ -189,7 +189,7 @@ const EventProvider = ({ children }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
           body: JSON.stringify(listTask),
@@ -217,7 +217,7 @@ const EventProvider = ({ children }) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "application/json",
           },
           body: JSON.stringify(participantRequest),
@@ -242,7 +242,7 @@ const EventProvider = ({ children }) => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
         }
@@ -265,7 +265,7 @@ const EventProvider = ({ children }) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
           body: JSON.stringify(taskRequest),
@@ -289,7 +289,7 @@ const EventProvider = ({ children }) => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
             accept: "*/*",
           },
         }
@@ -316,7 +316,7 @@ const EventProvider = ({ children }) => {
     UpdateParticipant,
     DeleteParticipant,
     UpdateTask,
-    DeleteTask
+    DeleteTask,
   };
   return <EventContext.Provider value={data}>{children}</EventContext.Provider>;
 };

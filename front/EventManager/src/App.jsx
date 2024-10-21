@@ -17,9 +17,9 @@ const App = () => {
     {
       path: "/",
       element: (
-        // <Protected>
-        <MainLayout />
-        // </Protected>
+        <Protected>
+          <MainLayout />
+        </Protected>
       ),
       children: [
         { path: "/", element: <Dashboard /> },

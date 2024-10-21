@@ -25,7 +25,7 @@ const Dashboard = () => {
     const getEvents = async () => {
       const events = await GetAllEvents();
       if (events) {
-        setEvents(events);
+        setEvents(events.reverse());
         setFilteredEvents(events);
       }
     };
