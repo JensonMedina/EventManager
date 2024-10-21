@@ -27,5 +27,12 @@ namespace Application.Mappings
                 EventId = eventId,
             };
         }
+        public TaskEvent FromEntityToEntityUpdated(TaskEvent entity, TaskRequest request)
+        {
+            entity.NameTask = request.NameTask ?? entity.NameTask;
+            entity.State = request.State;
+            entity.AssignedParticipantId = request.AssignedParticipantId;
+            return entity;
+        }
     }
 }

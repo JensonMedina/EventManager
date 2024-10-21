@@ -25,7 +25,7 @@ namespace Web.Controllers
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (userIdClaim == null)
             {
-                return Unauthorized(new { Succes = false, Msg = "No hay un usuario autorizado." }); // Si no está el claim, no hay un usuario autorizado.
+                return Unauthorized(new { Succes = false, Message = "No hay un usuario autorizado." }); // Si no está el claim, no hay un usuario autorizado.
             }
             if (eventId <= 0)
             {
@@ -65,8 +65,40 @@ namespace Web.Controllers
             }
             catch (NotFoundException ex)
             {
-                return StatusCode((int)ex.Code, new { Success = false, Msg = ex.Msg });
+                return StatusCode((int)ex.Code, new { Success = false, Message = ex.Msg });
+            }
+        }
+
+
+
+        [HttpPut("{taskId}")]
+        public async Task<ActionResult> UpdateTask([FromRoute] int taskId, [FromQuery] int eventId, [FromBody] TaskRequest request)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { Succes = false, Message = "No hay un usuario autorizado." }); // Si no está el claim, no hay un usuario autorizado.
+            }
+            if (request.AssignedParticipantId <= 0)
+            {
+                return BadRequest(new { Succes = false, Message = "El id del participante asignado es obligatorio." });
+            }
+            try
+            {
+                await _taskService.UpdateTask(int.Parse(userIdClaim), taskId, eventId, request);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+
+                return StatusCode((int)ex.Code, new { Success = false, Message = ex.Msg });
+            }
+            catch (NotAllowedException ex)
+            {
+
+                return StatusCode((int)ex.Code, new { Success = false, Message = ex.Msg });
             }
         }
     }
+
 }

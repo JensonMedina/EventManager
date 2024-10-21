@@ -96,25 +96,30 @@ const TabTasks = ({
         </CardHeader>
         <CardContent>
           {!isNaN(progress) && <Progress value={progress} className="mb-4" />}
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Tarea</TableHead>
-                <TableHead>Asignado a</TableHead>
-                <TableHead>Estado</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tasks.map((task) => (
-                <RowTask
-                  key={task.id}
-                  taskName={task.nameTask}
-                  assignedParticipant={task.assignedParticipant}
-                  taskStatus={task.state}
-                />
-              ))}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <Table className="min-w-full border border-gray-200">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Tarea</TableHead>
+                  <TableHead>Asignado a</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead>Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tasks.map((task) => (
+                  <RowTask
+                    key={task.id}
+                    task={task}
+                    idEvent={idEvent}
+                    participants={participants}
+                    load={load}
+                    setLoad={setLoad}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
       <form onSubmit={handleFormAddTask}>
