@@ -76,8 +76,10 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
             {participants.map((participant) => (
               <ParticipantAvatar
                 key={participant.id}
-                participantName={participant.name}
-                participantEmail={participant.email}
+                participant={participant}
+                idEvent={idEvent}
+                load={load}
+                setLoad={setLoad}
               />
             ))}
           </div>

@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTI5NjEwNiwiZXhwIjoxNzI5MzgyNTA2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.kHhUJ2CO0mzjoo8inTS0I_n_-ohOyl3_SDjrfxb4oxQ";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTUxNTUyMSwiZXhwIjoxNzI5NjAxOTIxLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.gCj5VnWpkFyo9SarXr_n1JiobeKmYDRTTfpq5oBJVRs";
 
   const GetAllEvents = async () => {
     try {
@@ -205,6 +205,35 @@ const EventProvider = ({ children }) => {
       return null;
     }
   };
+  const UpdateParticipant = async (
+    idParticipant,
+    idEvent,
+    participantRequest
+  ) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/events/Participant/${idParticipant}?idEvent=${idEvent}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "application/json",
+          },
+          body: JSON.stringify(participantRequest),
+        }
+      );
+      if (response.status === 204) {
+        // No Content: Devolvemos true porque se actualizo correctamente.
+        return true;
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log("Error al actualizar el participante ", error);
+      return null;
+    }
+  };
   const data = {
     GetAllEvents,
     GetEventById,
@@ -214,6 +243,7 @@ const EventProvider = ({ children }) => {
     AddParticipant,
     GetParticipants,
     AddTask,
+    UpdateParticipant,
   };
   return <EventContext.Provider value={data}>{children}</EventContext.Provider>;
 };
