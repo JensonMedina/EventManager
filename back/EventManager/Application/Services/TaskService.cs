@@ -86,5 +86,23 @@ namespace Application.Services
             var taskUpdated = _mapping.FromEntityToEntityUpdated(taskExist, request);
             await _repositoryBase.UpdateAsync(taskUpdated);
         }
+        public async Task DeleteTask(int userId, int eventId, int taskId)
+        {
+            var eventExist = await _eventRepositoryBase.GetByIdAsync(eventId);
+            if (eventExist == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "No se encontró el evento.");
+            }
+            if (eventExist.UserId != userId)
+            {
+                throw new NotAllowedException(HttpStatusCode.Forbidden, "El evento no pertenece a este usuario.");
+            }
+            var taskExist = await _repositoryBase.GetByIdAsync(taskId);
+            if (taskExist == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "No se encontró la tarea.");
+            }
+            await _repositoryBase.DeleteAsync(taskExist);
+        }
     }
 }

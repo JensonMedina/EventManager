@@ -99,6 +99,31 @@ namespace Web.Controllers
                 return StatusCode((int)ex.Code, new { Success = false, Message = ex.Msg });
             }
         }
+        [HttpDelete("{taskId}")]
+        public async Task<ActionResult> DeleteTask([FromRoute] int taskId, [FromQuery] int eventId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { Succes = false, Message = "No hay un usuario autorizado." }); // Si no está el claim, no hay un usuario autorizado.
+            }
+            try
+            {
+                await _taskService.DeleteTask(int.Parse(userIdClaim), eventId, taskId);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+
+                return StatusCode((int)ex.Code, new { Success = false, Message = ex.Msg });
+            }
+            catch (NotAllowedException ex)
+            {
+
+                return StatusCode((int)ex.Code, new { Success = false, Message = ex.Msg });
+            }
+
+        }
     }
 
 }

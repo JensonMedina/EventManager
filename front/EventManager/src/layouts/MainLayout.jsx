@@ -1,14 +1,12 @@
-import { useAuth } from "@/services/authentication/AuthenticationContext";
+import Navbar from "@/components/navBar/NavBar";
 import React from "react";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
-  const { logout } = useAuth();
   return (
     <div>
       <div>
-        header
-        <button onClick={logout}>Cerrar sesion</button>
+       <Navbar />
       </div>
       <div>
         <Outlet />
