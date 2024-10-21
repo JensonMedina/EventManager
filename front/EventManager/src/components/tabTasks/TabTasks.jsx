@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import InputTask from "@/components/inputTask/InputTask";
 import { EventContext } from "@/services/eventContext/EventContext";
-import { set } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 const TabTasks = ({
   idEvent,
@@ -34,17 +34,20 @@ const TabTasks = ({
 }) => {
   const [formAddTaskValid, setFormAddTaskValid] = useState(false);
   const [tasksInput, setTasksInput] = useState([
-    { nameTask: "", assignedParticipantId: "" },
+    { id: uuidv4(), nameTask: "", assignedParticipantId: "" },
   ]);
   const { AddTask } = useContext(EventContext);
   const [error, setError] = useState({});
   const addTask = () => {
-    setTasksInput([...tasksInput, { nameTask: "", assignedParticipantId: "" }]);
+    setTasksInput([
+      ...tasksInput,
+      { id: uuidv4(), nameTask: "", assignedParticipantId: "" },
+    ]);
   };
 
-  const removeTask = (index) => {
+  const removeTask = (id) => {
     setError({});
-    setTasksInput(tasksInput.filter((_, i) => i !== index));
+    setTasksInput(tasksInput.filter((t) => t.id !== id));
   };
 
   useEffect(() => {
@@ -61,16 +64,16 @@ const TabTasks = ({
 
   const handleFormAddTask = async (e) => {
     e.preventDefault();
-    for (let i = 0; i < tasksInput.length; i++) {
-      if (
-        tasksInput[i].nameTask.trim() === "" ||
-        tasksInput[i].assignedParticipantId.trim() === ""
-      ) {
-        setError({
-          msg: "Debes completar los campos de información de todas las tareas.",
-        });
-        return;
-      }
+
+    if (
+      tasksInput.some(
+        (t) => t.nameTask.trim() === "" || t.assignedParticipantId.trim() === ""
+      )
+    ) {
+      setError({
+        msg: "Debes completar los campos de información de todas las tareas.",
+      });
+      return;
     }
     const isSuccess = await AddTask(idEvent, tasksInput);
     if (!isSuccess) {
@@ -79,7 +82,7 @@ const TabTasks = ({
     }
     setError({});
     setLoad(!load);
-    setTasksInput([{ nameTask: "", assignedParticipantId: "" }]);
+    setTasksInput([{ id: uuidv4(), nameTask: "", assignedParticipantId: "" }]);
   };
   return (
     <div>
@@ -120,19 +123,18 @@ const TabTasks = ({
             <CardTitle>Agregar tareas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {tasksInput.map((task, index) => (
+            {tasksInput.map((task) => (
               <InputTask
-                key={index}
+                key={task.id}
                 task={task}
                 participants={participants}
                 removeTask={removeTask}
-                index={index}
                 setTasksInput={setTasksInput}
                 setError={setError}
               />
             ))}
             {error.msg && <p className="text-red-500">{error.msg}</p>}
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 md:flex-row">
               <Button onClick={addTask} variant="outline" type="button">
                 <Plus className="mr-2 h-4 w-4" /> Agregar Tarea
               </Button>

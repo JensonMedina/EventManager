@@ -42,13 +42,13 @@ const EventDetails = ({
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{eventName}</h1>
         <div className="space-x-2 flex">
-          <Button variant="outline">
-            <Link to={`/edit-event/${eventId}`}>
+          <Link to={`/edit-event/${eventId}`}>
+            <Button variant="outline">
               <Edit className="h-4 w-4" />
               {/* Texto visible solo en pantallas medianas o más grandes */}
               <span className="hidden md:inline ml-2">Editar</span>
-            </Link>
-          </Button>
+            </Button>
+          </Link>
 
           {/* Botón de eliminar */}
           <Button variant="destructive" onClick={openDialog}>

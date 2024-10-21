@@ -9,6 +9,7 @@ namespace Domain.Interfaces
 {
     public interface IParticipantRepository
     {
-        Task<List<Participant>> GetAllParticipantsFromAnEventAsync(int idEvent);
+        //Task<List<Participant>> GetAllParticipantsFromAnEventAsync(int idEvent);
+        Task<Participant?> GetParticipantFromAnEvent(int idParticipant, int idEvent, int idUser);
     }
 }

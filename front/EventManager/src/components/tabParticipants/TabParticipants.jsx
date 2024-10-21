@@ -11,15 +11,14 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { EventContext } from "@/services/eventContext/EventContext";
 import InputParticipant from "@/components/inputParticipant/InputParticipant";
-
+import { v4 as uuidv4 } from "uuid";
 const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
   const { AddParticipant } = useContext(EventContext);
 
-  // const [participants, setParticipants] = useState([]);
   const [formAddTaskValid, setFormAddTaskValid] = useState(false);
 
   const [participantsInput, setParticipantsInput] = useState([
-    { name: "", email: "" },
+    { id: uuidv4(), name: "", email: "" },
   ]);
   const [error, setError] = useState({});
 
@@ -30,26 +29,28 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
   }, [participantsInput]);
 
   const addParticipant = () => {
-    setParticipantsInput([...participantsInput, { name: "", email: "" }]);
+    setParticipantsInput([
+      ...participantsInput,
+      { id: uuidv4(), name: "", email: "" },
+    ]);
   };
 
-  const removeParticipant = (index) => {
-    setParticipantsInput((prev) => {
-      const newParticipants = [...prev];
-      newParticipants.splice(index, 1);
-      return newParticipants;
-    });
+  const removeParticipant = (id) => {
+    setParticipantsInput(participantsInput.filter((p) => p.id !== id));
     setError({});
   };
 
   const handleFormAddParticipants = async (e) => {
     e.preventDefault();
-    // const hasEmptyName = ;
     if (participantsInput.some((p) => p.name.trim() === "")) {
       setError({ msg: "Todos los participantes deben tener un nombre." });
       return;
     }
-    const isSuccess = await AddParticipant(idEvent, participantsInput);
+    const participantsToAdd = participantsInput.map((p) => ({
+      name: p.name,
+      email: p.email,
+    }));
+    const isSuccess = await AddParticipant(idEvent, participantsToAdd);
     if (!isSuccess) {
       console.log("Error al agregar los participantes.");
       return;
@@ -58,7 +59,7 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
     setLoad(!load);
 
     // Limpiar los inputs y errores.
-    setParticipantsInput([{ name: "", email: "" }]);
+    setParticipantsInput([{ id: uuidv4(), name: "", email: "" }]);
     setError({});
   };
   if (!participants) {
@@ -75,8 +76,10 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
             {participants.map((participant) => (
               <ParticipantAvatar
                 key={participant.id}
-                participantName={participant.name}
-                participantEmail={participant.email}
+                participant={participant}
+                idEvent={idEvent}
+                load={load}
+                setLoad={setLoad}
               />
             ))}
           </div>
@@ -88,10 +91,9 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
             <CardTitle>Agregar Participantes</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {participantsInput.map((participant, index) => (
+            {participantsInput.map((participant) => (
               <InputParticipant
-                key={index}
-                index={index}
+                key={participant.id}
                 participant={participant}
                 removeParticipant={removeParticipant}
                 setParticipants={setParticipantsInput}
@@ -99,7 +101,7 @@ const TabParticipants = ({ idEvent, participants, load, setLoad }) => {
               />
             ))}
             {error.msg && <p className="text-red-500">{error.msg}</p>}
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 md:flex-row">
               <Button onClick={addParticipant} variant="outline" type="button">
                 <Plus className="mr-2 h-4 w-4" /> Agregar Participante
               </Button>

@@ -8,17 +8,20 @@ const InputTask = ({
   participants,
   task,
   removeTask,
-  index,
   setTasksInput,
   setError,
 }) => {
   const handleTaskChange = (e) => {
     setError({});
     const { name, value } = e.target;
-    console.log(name, value);
+
     setTasksInput((prev) => {
       const newTasks = [...prev];
-      newTasks[index][name] = value || "";
+      const index = newTasks.findIndex((t) => t.id === task.id);
+      if (index !== -1) {
+        newTasks[index][name] = value || "";
+      }
+
       return newTasks;
     });
   };
@@ -40,14 +43,14 @@ const InputTask = ({
         value={task.assignedParticipantId}
       >
         <option value="">Elija un participante</option>
-        {participants.map((participant, index) => (
-          <option key={index} value={participant.id}>
+        {participants.map((participant) => (
+          <option key={participant.id} value={participant.id}>
             {participant.name}
           </option>
         ))}
       </select>
 
-      <Button variant="outline" size="icon" onClick={() => removeTask(index)}>
+      <Button variant="outline" size="icon" onClick={() => removeTask(task.id)}>
         <Trash2 className="h-4 w-4" />
       </Button>
     </div>

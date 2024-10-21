@@ -24,5 +24,11 @@ namespace Application.Mappings
                 Email = entity.Email,
             };
         }
+        public Participant FromEntityToEntityUpdated(Participant entity, ParticipantRequest request)
+        {
+            entity.Name = request.Name ?? entity.Name;
+            entity.Email = request.Email ?? entity.Email;
+            return entity;
+        }
     }
 }
