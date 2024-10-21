@@ -59,5 +59,24 @@ namespace Web.Controllers
                 return StatusCode((int)ex.Code, new { Success = false, Msg = ex.Msg });
             }
         }
+        [HttpDelete("{idParticipant}")]
+        public async Task<ActionResult> DeleteParticipant([FromRoute] int idParticipant, [FromQuery] int idEvent)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { Succes = false, Msg = "No hay un usuario autorizado." }); // Si no está el claim, no hay un usuario autorizado.
+            }
+            try
+            {
+                await _service.DeleteParticipant(int.Parse(userIdClaim), idEvent, idParticipant);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+
+                return StatusCode((int)ex.Code, new { Success = false, Msg = ex.Msg });
+            }
+        }
     }
 }

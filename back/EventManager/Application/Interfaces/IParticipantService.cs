@@ -8,5 +8,6 @@ namespace Application.Interfaces
         Task<List<ParticipantResponse>> AddParticipantAsync(List<ParticipantRequest> participants, int idEvent);
         //Task<List<ParticipantResponse>> GetAllParticipantsFromAnEvent(int idEvent);
         Task UpdateParticipant(int idUser, int idEvent, int idParticipant, ParticipantRequest request);
+        Task DeleteParticipant(int idUser, int idEvent, int idParticipant);
     }
 }

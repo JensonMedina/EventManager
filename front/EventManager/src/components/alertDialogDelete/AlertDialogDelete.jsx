@@ -17,8 +17,7 @@ const AlertDialogDelete = ({ open, onOpenChange, onConfirm }) => {
         <AlertDialogHeader>
           <AlertDialogTitle>¿Estás completamente seguro?</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta acción no se puede deshacer. Esto eliminará permanentemente tu
-            evento.
+            Esta acción no se puede deshacer.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
