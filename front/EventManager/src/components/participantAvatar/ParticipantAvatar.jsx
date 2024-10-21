@@ -4,12 +4,16 @@ import { Edit, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { EventContext } from "@/services/eventContext/EventContext";
 import { Input } from "../ui/input";
+import AlertDialogDelete from "../alertDialogDelete/AlertDialogDelete";
 
 const ParticipantAvatar = ({ participant, idEvent, load, setLoad }) => {
-  const { UpdateParticipant } = useContext(EventContext);
+  const { UpdateParticipant, DeleteParticipant } = useContext(EventContext);
   const [isEdit, setIsEdit] = useState(false);
   const [participantName, setParticipantName] = useState(participant.name);
   const [participantEmail, setParticipantEmail] = useState(participant.email);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const openDialog = () => setIsDialogOpen(true);
+  const closeDialog = () => setIsDialogOpen(false);
   const handleUpdateParticipant = async () => {
     if (participantName.trim() === "") return;
 
@@ -28,6 +32,14 @@ const ParticipantAvatar = ({ participant, idEvent, load, setLoad }) => {
       return;
     }
     setIsEdit(false);
+    setLoad(!load);
+  };
+  const handleDelete = async () => {
+    const isSucces = await DeleteParticipant(participant.id, idEvent);
+    if (!isSucces) {
+      console.log("Error al eliminar el evento.");
+      return;
+    }
     setLoad(!load);
   };
   if (isEdit) {
@@ -78,10 +90,18 @@ const ParticipantAvatar = ({ participant, idEvent, load, setLoad }) => {
         <Button variant="outline" size="icon" onClick={() => setIsEdit(true)}>
           <Edit className="h-4 w-4" />
         </Button>
-        <Button variant="destructive" size="icon">
+        <Button variant="destructive" size="icon" onClick={openDialog}>
           <Trash2 className="h-4 w-4" />
         </Button>
       </div>
+      <AlertDialogDelete
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onConfirm={() => {
+          handleDelete();
+          closeDialog();
+        }}
+      />
     </div>
   );
 };

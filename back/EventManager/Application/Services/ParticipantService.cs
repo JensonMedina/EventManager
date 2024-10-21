@@ -36,6 +36,17 @@ namespace Application.Services
             return listReponse;
         }
 
+        public async Task DeleteParticipant(int idUser, int idEvent, int idParticipant)
+        {
+            var participant = await _participantRepository.GetParticipantFromAnEvent(idParticipant, idEvent, idUser);
+            //despues valido si ese participante esta anotado en ese evento.
+            if (participant == null)
+            {
+                throw new NotFoundException(HttpStatusCode.NotFound, "Participante no encontrado");
+            }
+            await _repositoryBase.DeleteAsync(participant);
+        }
+
         //public async Task<List<ParticipantResponse>> GetAllParticipantsFromAnEvent(int idEvent)
         //{
         //    var response = await _participantRepository.GetAllParticipantsFromAnEventAsync(idEvent);
