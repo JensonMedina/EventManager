@@ -8,5 +8,6 @@ namespace Application.Interfaces
     {
         Task<List<TaskResponse>?> AddTask(int userId, int eventId, List<TaskRequest> listTask);
         Task UpdateTask(int userId, int taskId, int eventId, TaskRequest request);
+        Task DeleteTask(int userId, int eventId, int taskId);
     }
 }

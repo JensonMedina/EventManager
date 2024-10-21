@@ -4,7 +4,7 @@ export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTU0MTc4OSwiZXhwIjoxNzI5NjI4MTg5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.35QbAu7XqfawlEEqeZP6aVQo5VSbdn8w2ve8ON69id8";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZ2l2ZW5fbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyOTU0NDQzNywiZXhwIjoxNzI5NjMwODM3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJBbnlvbmUifQ.-z4zRMC0PtqmNiEs2j6QWOubhJxV6GOku5c8vrSxVkM";
 
   const GetAllEvents = async () => {
     try {
@@ -281,6 +281,29 @@ const EventProvider = ({ children }) => {
       return null;
     }
   };
+  const DeleteTask = async (taskId, eventId) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7299/api/Task/${taskId}?eventId=${eventId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+        }
+      );
+      if (response.status === 204) {
+        return true;
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al eliminar la tarea ", error);
+      return null;
+    }
+  };
   const data = {
     GetAllEvents,
     GetEventById,
@@ -292,7 +315,8 @@ const EventProvider = ({ children }) => {
     AddTask,
     UpdateParticipant,
     DeleteParticipant,
-    UpdateTask
+    UpdateTask,
+    DeleteTask
   };
   return <EventContext.Provider value={data}>{children}</EventContext.Provider>;
 };

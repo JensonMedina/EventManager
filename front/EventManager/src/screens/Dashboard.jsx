@@ -56,30 +56,36 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Eventos</h1>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
+          Eventos
+        </h1>
 
-        <Link to={"/create-event"}>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Crear nuevo evento
-          </Button>
-        </Link>
+        <div className="flex justify-center sm:justify-end">
+          <Link to={"/create-event"}>
+            <Button className="flex items-center gap-2 px-4 py-2">
+              <Plus className="h-4 w-4" />
+              <span>Crear nuevo evento</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      <div className="flex space-x-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex-1">
           <div className="relative">
             <Input
               type="text"
               placeholder="Buscar eventos por su nombre..."
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-full"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
           </div>
         </div>
+
         <Select onValueChange={(value) => setFilterState(value)}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Filtrar por estado" />
           </SelectTrigger>
           <SelectContent>
